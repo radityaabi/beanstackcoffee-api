@@ -1,0 +1,27 @@
+{
+  "name": "my-app",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.9",
+    "@hono/zod-openapi": "^1.2.1",
+    "@prisma/adapter-pg": "^7.4.0",
+    "@prisma/client": "^7.4.0",
+    "@scalar/hono-api-reference": "^0.9.40",
+    "dotenv": "^17.3.1",
+    "hono": "^4.11.9",
+    "pg": "^8.18.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.33",
+    "@types/pg": "^8.16.0",
+    "prisma": "^7.4.0",
+    "tsx": "^4.7.1",
+    "typescript": "^5.8.3"
+  }
+}
