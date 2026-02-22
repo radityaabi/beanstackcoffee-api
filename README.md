@@ -2,7 +2,7 @@
 
 ## REST API Specification
 
-- Production: `https://beanstack-coffee-api.radityaabi.com`
+- Production: `https://beanstackcoffee-api.radityaabi.com`
 - Local: `http://localhost:3000`
 
 Products:

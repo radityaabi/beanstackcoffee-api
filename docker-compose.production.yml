@@ -1,6 +1,6 @@
 services:
   backend:
-    image: beanstack-coffee
+    image: beanstackcoffee
     build:
       context: .
     ports:
