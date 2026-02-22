@@ -2,12 +2,12 @@ import { logger } from "hono/logger";
 import { cors } from "hono/cors";
 import { Scalar } from "@scalar/hono-api-reference";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { productRoutes } from "./modules/products/route";
+import { productRoute } from "./modules/product/route";
 
 const app = new OpenAPIHono();
 
 app.use(logger());
-app.route("/products", productRoutes);
+app.route("/products", productRoute);
 app.use("/products",cors());
 
 // OpenAPI Documentation Route

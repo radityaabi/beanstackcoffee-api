@@ -1,10 +1,10 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 
-export const productRoutes = new OpenAPIHono();
+export const productRoute = new OpenAPIHono();
 
 const tags = ["products"];
 
-productRoutes.openapi(
+productRoute.openapi(
   {
     path: "/",
     method: "get",
