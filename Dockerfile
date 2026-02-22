@@ -1,6 +1,6 @@
 # Use the official Bun image with Debian Linux
 # Oven is the company name, the creator of Bun
-FROM oven/bun:debian
+FROM node:alpine
 
 # Create and change to the app directory
 WORKDIR /usr/src/app
@@ -9,7 +9,7 @@ WORKDIR /usr/src/app
 COPY . .
 
 # Install app dependencies
-RUN bun install
+RUN pnpm install
 
 # Run the application
-CMD ["bun", "start"]
+CMD ["pnpm", "start"]

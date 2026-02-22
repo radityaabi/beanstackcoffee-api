@@ -8,11 +8,13 @@ const app = new OpenAPIHono();
 
 app.use(logger());
 app.route("/products", productRoute);
-app.use("/products",cors({
-  origin: ["http://localhost:5173", "https://beanstackcoffee.radityaabi.com"],
-  allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH "],
-}
-));
+app.use(
+  "/products",
+  cors({
+    origin: ["http://localhost:5173", "https://beanstackcoffee.radityaabi.com"],
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH "],
+  }),
+);
 
 // OpenAPI Documentation Route
 app.doc("/openapi.json", {

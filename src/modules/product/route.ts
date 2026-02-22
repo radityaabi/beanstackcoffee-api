@@ -17,7 +17,7 @@ productRoute.openapi(
     },
   },
   (c) => {
-    const product = "tes products";
-    return c.json(product, 200);
+    const products = [{}];
+    return c.json(products, 200);
   },
 );
