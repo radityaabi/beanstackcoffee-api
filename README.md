@@ -14,6 +14,7 @@ Products:
 | `/products`       | `POST`   | Add new product      |
 | `/products/:id`   | `DELETE` | Delete product by id |
 | `/products/:id`   | `PUT`    | Update product by id |
+| `/products/:id`   | `PATCH`  | Update product by id |
 
 Auth:
 
