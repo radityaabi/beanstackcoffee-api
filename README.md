@@ -1,5 +1,9 @@
 # Beanstack Coffee - Backend API
 
+## ERD
+
+![beanstack-ERD](asset/beanstack-erd.png)
+
 ## REST API Specification
 
 - Production: `https://beanstackcoffee-api.radityaabi.com`
