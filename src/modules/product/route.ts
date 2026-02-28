@@ -90,10 +90,10 @@ productRoute.openapi(getProductsRoute, async (c) => {
 
   return c.json(
     {
-      data: products.map((p) => ({
-        ...p,
-        createdAt: p.createdAt.toISOString(),
-        updatedAt: p.updatedAt.toISOString(),
+      data: products.map((product) => ({
+        ...product,
+        createdAt: product.createdAt.toISOString(),
+        updatedAt: product.updatedAt.toISOString(),
       })),
       pagination: { page, limit, totalItems, totalPages },
     },
