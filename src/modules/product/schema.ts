@@ -68,7 +68,11 @@ export const ProductQuerySchema = z.object({
   page: z.string().optional().openapi({ example: "1" }),
   limit: z.string().optional().openapi({ example: "10" }),
   search: z.string().optional().openapi({ example: "arabica" }),
-  type: CoffeeTypeEnum.optional().openapi({ example: "ARABICA" }),
+  type: z.string().optional().openapi({
+    example: "ARABICA",
+    description:
+      "Filter by coffee type. Supports multiple values separated by commas (e.g. ARABICA,ROBUSTA). Valid values: ARABICA, ROBUSTA, BLEND",
+  }),
   minPrice: z.string().optional().openapi({ example: "50000" }),
   maxPrice: z.string().optional().openapi({ example: "200000" }),
   minWeight: z

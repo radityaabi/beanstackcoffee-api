@@ -52,9 +52,10 @@ productRoute.openapi(getProductsRoute, async (c) => {
     ];
   }
 
-  // Filter by coffee type
+  // Filter by coffee type (supports multiple comma-separated values)
   if (query.type) {
-    where.type = query.type;
+    const types = query.type.split(",").map((t: string) => t.trim());
+    where.type = types.length === 1 ? types[0] : { in: types };
   }
 
   // Filter by price range
