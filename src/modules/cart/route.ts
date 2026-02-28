@@ -58,6 +58,7 @@ function formatCart(cart: any) {
         sku: item.product.sku,
         type: item.product.type,
         price: item.product.price,
+        weight: item.product.weight,
         stockQuantity: item.product.stockQuantity,
         imageUrl: item.product.imageUrl,
         description: item.product.description,

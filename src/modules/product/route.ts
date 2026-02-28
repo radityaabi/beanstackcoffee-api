@@ -64,6 +64,13 @@ productRoute.openapi(getProductsRoute, async (c) => {
     if (query.maxPrice) where.price.lte = parseInt(query.maxPrice);
   }
 
+  // Filter by weight range (grams)
+  if (query.minWeight || query.maxWeight) {
+    where.weight = {};
+    if (query.minWeight) where.weight.gte = parseInt(query.minWeight);
+    if (query.maxWeight) where.weight.lte = parseInt(query.maxWeight);
+  }
+
   // Build orderBy
   const sortBy = query.sortBy || "createdAt";
   const sortOrder = query.sortOrder || "desc";

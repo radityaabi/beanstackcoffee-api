@@ -27,6 +27,7 @@ model Product {
   sku           String     @unique
   type          CoffeeType
   price         Int
+  weight        Int        @default(250)
   stockQuantity Int
   imageUrl      String?
   description   String?    @db.Text

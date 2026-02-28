@@ -4,15 +4,16 @@ import { products } from "./data";
 async function main() {
   console.log("🌱 Seeding database...");
 
-  // Upsert products
+  // Upsert products by SKU (stable identifier)
   for (const product of products) {
     const result = await prisma.product.upsert({
-      where: { slug: product.slug },
+      where: { sku: product.sku },
       update: {
+        slug: product.slug,
         name: product.name,
-        sku: product.sku,
         type: product.type,
         price: product.price,
+        weight: product.weight,
         stockQuantity: product.stockQuantity,
         imageUrl: product.imageUrl,
         description: product.description,
@@ -23,6 +24,7 @@ async function main() {
         sku: product.sku,
         type: product.type,
         price: product.price,
+        weight: product.weight,
         stockQuantity: product.stockQuantity,
         imageUrl: product.imageUrl,
         description: product.description,

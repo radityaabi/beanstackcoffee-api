@@ -10,6 +10,7 @@ export const ProductSchema = z
     sku: z.string(),
     type: CoffeeTypeEnum,
     price: z.number().int(),
+    weight: z.number().int(),
     stockQuantity: z.number().int(),
     imageUrl: z.string().nullable(),
     description: z.string().nullable(),
@@ -34,6 +35,11 @@ export const CreateProductSchema = z
     sku: z.string().min(1).openapi({ example: "CF-BEANS-001" }),
     type: CoffeeTypeEnum.openapi({ example: "BLEND" }),
     price: z.number().int().positive().openapi({ example: 149000 }),
+    weight: z
+      .number()
+      .int()
+      .positive()
+      .openapi({ example: 250, description: "Weight in grams" }),
     stockQuantity: z.number().int().min(0).openapi({ example: 50 }),
     imageUrl: z.url().optional().openapi({
       example:
@@ -51,6 +57,7 @@ export const UpdateProductSchema = z
     sku: z.string().min(1).optional(),
     type: CoffeeTypeEnum.optional(),
     price: z.number().int().positive().optional(),
+    weight: z.number().int().positive().optional(),
     stockQuantity: z.number().int().min(0).optional(),
     imageUrl: z.url().nullable().optional(),
     description: z.string().nullable().optional(),
@@ -64,8 +71,16 @@ export const ProductQuerySchema = z.object({
   type: CoffeeTypeEnum.optional().openapi({ example: "ARABICA" }),
   minPrice: z.string().optional().openapi({ example: "50000" }),
   maxPrice: z.string().optional().openapi({ example: "200000" }),
+  minWeight: z
+    .string()
+    .optional()
+    .openapi({ example: "200", description: "Minimum weight in grams" }),
+  maxWeight: z
+    .string()
+    .optional()
+    .openapi({ example: "500", description: "Maximum weight in grams" }),
   sortBy: z
-    .enum(["name", "price", "createdAt"])
+    .enum(["name", "price", "weight", "createdAt"])
     .optional()
     .openapi({ example: "price" }),
   sortOrder: z.enum(["asc", "desc"]).optional().openapi({ example: "asc" }),
