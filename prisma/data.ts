@@ -1,6 +1,7 @@
-export const products = [
+import { SeedProducts } from "../src/modules/product/schema";
+
+export const products: SeedProducts = [
   {
-    slug: "mens-rea-blend-340g",
     name: "Mens Rea Blend 340g",
     sku: "CF-BEANS-001",
     type: "BLEND" as const,
@@ -13,7 +14,6 @@ export const products = [
       "Blend yang bold dan kompleks, memadukan kedalaman earthy Robusta Sumatra dengan keasaman cerah Arabika Toraja. Roast medium-dark dengan cita rasa dark chocolate, kayu cedar, dan sentuhan buah tropis. Cocok untuk pecinta espresso.",
   },
   {
-    slug: "toraja-kalosi-arabica-250g",
     name: "Toraja Kalosi Arabica 250g",
     sku: "CF-BEANS-002",
     type: "ARABICA" as const,
@@ -26,7 +26,6 @@ export const products = [
       "Arabika single-origin dari dataran tinggi Tana Toraja, Sulawesi Selatan. Diproses wet-hulled dan dijemur di ketinggian 1.500 mdpl. Profil rasa kompleks dengan nuansa beri gelap, rempah, dan manis smoky yang tahan lama.",
   },
   {
-    slug: "gayo-mountain-reserve-340g",
     name: "Gayo Mountain Reserve 340g",
     sku: "CF-BEANS-003",
     type: "ARABICA" as const,
@@ -39,7 +38,6 @@ export const products = [
       "Arabika premium dari dataran tinggi vulkanik Gayo, Aceh. Ditanam di ketinggian 1.400–1.600 mdpl oleh koperasi lokal. Roast medium dengan keasaman citrus yang cerah, manis madu, dan akhir rasa bersih seperti teh.",
   },
   {
-    slug: "java-preanger-estate-250g",
     name: "Java Preanger Estate 250g",
     sku: "CF-BEANS-004",
     type: "ARABICA" as const,
@@ -52,7 +50,6 @@ export const products = [
       "Arabika estate dari dataran tinggi Preanger, Jawa Barat. Kopi klasik Jawa dengan roast medium-dark, body tebal, keasaman rendah, serta cita rasa herbal, malt, dan cokelat pahit manis.",
   },
   {
-    slug: "lampung-robusta-premium-500g",
     name: "Lampung Robusta Premium 500g",
     sku: "CF-BEANS-005",
     type: "ROBUSTA" as const,
@@ -65,7 +62,6 @@ export const products = [
       "Robusta grade premium dari Lampung, Sumatra Selatan. Dark roast untuk body maksimal dengan rasa earthy yang intens. Nuansa walnut, karamel gelap, dan akhir rasa kuat serta penuh. Ideal untuk kopi gaya Vietnam.",
   },
   {
-    slug: "bali-kintamani-natural-250g",
     name: "Bali Kintamani Natural 250g",
     sku: "CF-BEANS-006",
     type: "ARABICA" as const,
@@ -78,7 +74,6 @@ export const products = [
       "Arabika proses natural dari lereng Gunung Batur, Kintamani. Roast light menonjolkan rasa buah blueberry yang cerah, cokelat susu, dan madu. Ditanam bersama pohon jeruk menggunakan sistem irigasi tradisional subak.",
   },
   {
-    slug: "flores-bajawa-honey-250g",
     name: "Flores Bajawa Honey 250g",
     sku: "CF-BEANS-007",
     type: "ARABICA" as const,
@@ -91,7 +86,6 @@ export const products = [
       "Arabika proses honey dari dataran tinggi Bajawa, Flores, NTT. Roast light-medium dengan body manis seperti sirup. Terdapat rasa mangga tropis, gula aren, dan aroma floral yang lembut.",
   },
   {
-    slug: "sumatra-mandheling-gold-340g",
     name: "Sumatra Mandheling Gold 340g",
     sku: "CF-BEANS-008",
     type: "ARABICA" as const,
@@ -104,7 +98,6 @@ export const products = [
       "Mandheling grade premium dari Sumatra Utara. Dipilih tiga kali dan diproses wet-hulled untuk kualitas terbaik. Dark roast dengan body penuh dan velvety, keasaman rendah, serta rasa kompleks tembakau pipa, earthy, dan dark chocolate.",
   },
   {
-    slug: "temanggung-robusta-fine-250g",
     name: "Temanggung Fine Robusta 250g",
     sku: "CF-BEANS-009",
     type: "ROBUSTA" as const,
@@ -117,7 +110,6 @@ export const products = [
       "Fine Robusta dari lereng Gunung Sumbing, Temanggung, Jawa Tengah. Robusta specialty dengan kompleksitas mengejutkan. Roast medium-dark dengan rasa gula merah, kacang mete, dan akhir nutty yang halus.",
   },
   {
-    slug: "papua-wamena-highland-340g",
     name: "Papua Wamena Highland 340g",
     sku: "CF-BEANS-010",
     type: "ARABICA" as const,
@@ -130,7 +122,6 @@ export const products = [
       "Arabika langka dari Lembah Baliem, Papua. Ditanam oleh petani lokal di ketinggian 1.500–2.000 mdpl tanpa bahan kimia. Roast medium dengan karakter unik: floral, fruity dengan sentuhan stone fruit, dan akhir rasa manis yang bersih.",
   },
   {
-    slug: "nusantara-morning-blend-250g",
     name: "Nusantara Morning Blend 250g",
     sku: "CF-BEANS-011",
     type: "BLEND" as const,
@@ -143,7 +134,6 @@ export const products = [
       "Blend harian yang diracik dari Arabika Jawa dan Robusta Lampung. Roast medium menghasilkan cangkir yang seimbang dan mudah dinikmati, dengan nuansa cokelat susu, almond panggang, dan manis lembut di akhir.",
   },
   {
-    slug: "aceh-gayo-organic-340g",
     name: "Aceh Gayo Organic 340g",
     sku: "CF-BEANS-012",
     type: "ARABICA" as const,
@@ -156,7 +146,6 @@ export const products = [
       "Arabika organik bersertifikat dari wilayah Gayo, Aceh. Dipasok melalui koperasi petani kecil dengan prinsip fair-trade. Body kaya dan penuh, dengan lapisan rasa buah gelap, cengkeh, dan molase yang kompleks.",
   },
   {
-    slug: "sulawesi-enrekang-washed-250g",
     name: "Sulawesi Enrekang Washed 250g",
     sku: "CF-BEANS-013",
     type: "ARABICA" as const,
@@ -169,7 +158,6 @@ export const products = [
       "Arabika fully washed dari dataran tinggi Enrekang, Sulawesi Selatan. Roast medium dengan profil bersih dan cerah, menghadirkan rasa apel hijau, lemon zest, dan gula merah dengan tekstur silky di mulut.",
   },
   {
-    slug: "west-java-ciwidey-peaberry-250g",
     name: "West Java Ciwidey Peaberry 250g",
     sku: "CF-BEANS-014",
     type: "ARABICA" as const,
@@ -182,7 +170,6 @@ export const products = [
       "Biji peaberry pilihan tangan dari Ciwidey, Bandung. Ukurannya lebih kecil dan padat sehingga menghasilkan roasting lebih merata. Memberikan rasa berry yang cerah, melati, dan sentuhan kakao manis yang intens.",
   },
   {
-    slug: "bengkulu-rejang-lebong-250g",
     name: "Bengkulu Rejang Lebong 250g",
     sku: "CF-BEANS-015",
     type: "ARABICA" as const,
@@ -195,7 +182,6 @@ export const products = [
       "Arabika dari wilayah Rejang Lebong, Bengkulu, Sumatra. Roast medium dengan profil halus dan seimbang, menghadirkan rasa toffee, plum matang, dan sentuhan herbal lembut di akhir.",
   },
   {
-    slug: "kopi-joss-traditional-250g",
     name: "Kopi Joss Traditional Robusta 250g",
     sku: "CF-BEANS-016",
     type: "ROBUSTA" as const,
@@ -208,7 +194,6 @@ export const products = [
       "Robusta tradisional khas Jawa dengan dark roast klasik. Rasa kuat, smoky, dan woody dengan body tebal seperti sirup. Terinspirasi dari tradisi Kopi Joss khas Yogyakarta.",
   },
   {
-    slug: "sunda-hejo-green-bean-1kg",
     name: "Sunda Hejo Green Bean Arabica 1kg",
     sku: "CF-BEANS-017",
     type: "ARABICA" as const,
@@ -221,7 +206,6 @@ export const products = [
       "Biji kopi hijau (belum disangrai) dari wilayah Sunda, Jawa Barat. Cocok untuk home roaster yang ingin mengontrol profil roasting sendiri. Arabika berkualitas tinggi dengan potensi optimal untuk roast light hingga medium.",
   },
   {
-    slug: "espresso-nusantara-blend-340g",
     name: "Espresso Nusantara Blend 340g",
     sku: "CF-BEANS-018",
     type: "BLEND" as const,
@@ -234,7 +218,6 @@ export const products = [
       "Blend espresso khusus yang memadukan Arabika Gayo, Robusta Temanggung, dan Arabika Flores. Dark roast dirancang untuk crema tebal, body kaya, dan profil rasa seimbang dengan nuansa dark chocolate, hazelnut, dan karamel.",
   },
   {
-    slug: "liberika-meranti-rare-340g",
     name: "Liberika Meranti Rare Edition 340g",
     sku: "CF-BEANS-019",
     type: "BLEND" as const,
@@ -247,7 +230,6 @@ export const products = [
       "Biji Liberika langka dari Kepulauan Meranti, Riau. Dikenal dengan ukuran besar dan bentuk asimetris unik. Profil rasa fruity, smoky, dan floral dengan sentuhan nangka, beri gelap, serta gula terbakar. Kopi kolektor yang istimewa.",
   },
   {
-    slug: "cold-brew-starter-pack-250g",
     name: "Cold Brew Starter Pack 250g",
     sku: "CF-BEANS-020",
     type: "BLEND" as const,
