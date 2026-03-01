@@ -28,7 +28,7 @@ model Product {
   type          CoffeeType
   price         Int        @default(0)
   weight        Int        @default(0)
-  stockQuantity Int        @default(1)
+  stockQuantity Int        @default(0)
   imageUrl      String?    @db.Text
   description   String?    @db.Text
 
