@@ -1,11 +1,18 @@
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { prisma } from "../../lib/prisma";
 import { hashSync, compareSync } from "bcryptjs";
-import { signToken, authMiddleware } from "../../lib/auth";
+import {
+  signToken,
+  generateRefreshToken,
+  REFRESH_TOKEN_EXPIRY_DAYS,
+  authMiddleware,
+} from "../../lib/auth";
 import {
   RegisterSchema,
   LoginSchema,
   AuthResponseSchema,
+  RefreshSchema,
+  RefreshResponseSchema,
   MeResponseSchema,
 } from "./schema";
 
@@ -51,7 +58,6 @@ const registerRoute = createRoute({
 authRoute.openapi(registerRoute, async (c) => {
   const { username, email, password } = c.req.valid("json");
 
-  // Check if user already exists
   const existingUser = await prisma.user.findFirst({
     where: { OR: [{ email }, { username }] },
   });
@@ -67,11 +73,24 @@ authRoute.openapi(registerRoute, async (c) => {
   });
 
   const token = await signToken({ userId: user.id, email: user.email });
+  const refreshToken = generateRefreshToken();
+
+  await prisma.userToken.create({
+    data: {
+      userId: user.id,
+      accessToken: token,
+      refreshToken,
+      expiresAt: new Date(
+        Date.now() + REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000,
+      ),
+    },
+  });
 
   return c.json(
     {
       message: "User registered successfully",
       token,
+      refreshToken,
       user: { id: user.id, username: user.username, email: user.email },
     },
     201,
@@ -112,11 +131,24 @@ authRoute.openapi(loginRoute, async (c) => {
   }
 
   const token = await signToken({ userId: user.id, email: user.email });
+  const refreshToken = generateRefreshToken();
+
+  await prisma.userToken.create({
+    data: {
+      userId: user.id,
+      accessToken: token,
+      refreshToken,
+      expiresAt: new Date(
+        Date.now() + REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000,
+      ),
+    },
+  });
 
   return c.json(
     {
       message: "Login successful",
       token,
+      refreshToken,
       user: { id: user.id, username: user.username, email: user.email },
     },
     200,
@@ -175,7 +207,8 @@ const logoutRoute = createRoute({
   path: "/logout",
   tags,
   summary: "Logout user",
-  description: "Client should discard the token after this call.",
+  description:
+    "Revokes the current access token and its associated refresh token.",
   security: [{ Bearer: [] }],
   responses: {
     200: { description: "Logged out successfully" },
@@ -186,5 +219,72 @@ const logoutRoute = createRoute({
 authRoute.use("/logout", authMiddleware);
 
 authRoute.openapi(logoutRoute, async (c) => {
+  const authHeader = c.req.header("Authorization")!;
+  const token = authHeader.replace("Bearer ", "");
+
+  await prisma.userToken.delete({
+    where: { accessToken: token },
+  });
+
   return c.json({ message: "Logged out successfully" }, 200);
+});
+
+// ─── POST /auth/refresh ───
+const refreshRoute = createRoute({
+  method: "post",
+  path: "/refresh",
+  tags,
+  summary: "Refresh access token",
+  description: "Exchange a valid refresh token for a new access token.",
+  request: {
+    body: {
+      content: { "application/json": { schema: RefreshSchema } },
+    },
+  },
+  responses: {
+    200: {
+      description: "Token refreshed successfully",
+      content: { "application/json": { schema: RefreshResponseSchema } },
+    },
+    401: { description: "Invalid or expired refresh token" },
+  },
+});
+
+authRoute.openapi(refreshRoute, async (c) => {
+  const { refreshToken } = c.req.valid("json");
+
+  const userToken = await prisma.userToken.findUnique({
+    where: { refreshToken },
+    include: { user: true },
+  });
+
+  if (!userToken) {
+    return c.json({ error: "Invalid refresh token." }, 401);
+  }
+
+  if (userToken.expiresAt < new Date()) {
+    await prisma.userToken.delete({ where: { id: userToken.id } });
+    return c.json(
+      { error: "Refresh token has expired. Please login again." },
+      401,
+    );
+  }
+
+  const newAccessToken = await signToken({
+    userId: userToken.user.id,
+    email: userToken.user.email,
+  });
+
+  await prisma.userToken.update({
+    where: { id: userToken.id },
+    data: { accessToken: newAccessToken },
+  });
+
+  return c.json(
+    {
+      message: "Token refreshed successfully",
+      token: newAccessToken,
+    },
+    200,
+  );
 });

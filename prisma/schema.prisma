@@ -23,13 +23,13 @@ model Product {
   id String @id @default(ulid())
 
   slug          String     @unique
-  name          String     @unique
-  sku           String     @unique
+  name          String     @unique @db.VarChar(100)
+  sku           String     @unique @db.VarChar(20)
   type          CoffeeType
-  price         Int
-  weight        Int        @default(250)
-  stockQuantity Int
-  imageUrl      String?
+  price         Int        @default(0)
+  weight        Int        @default(0)
+  stockQuantity Int        @default(0)
+  imageUrl      String?    @db.Text
   description   String?    @db.Text
 
   cartItems CartItem[]
@@ -45,10 +45,23 @@ model User {
   email    String @unique
   password String
 
-  cart Cart?
+  cart    Cart?
+  tokens  UserToken[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+}
+
+model UserToken {
+  id           String   @id @default(ulid())
+
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken  String   @unique
+  refreshToken String   @unique
+  expiresAt    DateTime
+
+  createdAt    DateTime @default(now())
 }
 
 model Cart {

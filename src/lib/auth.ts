@@ -1,6 +1,8 @@
 import { sign, verify } from "hono/jwt";
 import { createMiddleware } from "hono/factory";
 import type { Context, Next } from "hono";
+import { prisma } from "./prisma";
+import { randomUUID } from "crypto";
 
 function getJwtSecret(): string {
   return process.env.JWT_SECRET || "default-secret-change-me";
@@ -13,12 +15,18 @@ export async function signToken(payload: {
   return await sign(
     {
       ...payload,
-      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 days
+      exp: Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes
     },
     getJwtSecret(),
     "HS256",
   );
 }
+
+export function generateRefreshToken(): string {
+  return randomUUID();
+}
+
+export const REFRESH_TOKEN_EXPIRY_DAYS = 7;
 
 export async function verifyToken(
   token: string,
@@ -44,6 +52,15 @@ export const authMiddleware = createMiddleware(
 
     if (!payload) {
       return c.json({ error: "Invalid or expired token." }, 401);
+    }
+
+    // Check if token exists in active sessions (not logged out)
+    const activeToken = await prisma.userToken.findUnique({
+      where: { accessToken: token },
+    });
+
+    if (!activeToken) {
+      return c.json({ error: "Token has been revoked." }, 401);
     }
 
     c.set("userId" as never, payload.userId as never);
