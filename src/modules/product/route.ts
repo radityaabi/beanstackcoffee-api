@@ -160,13 +160,13 @@ const createProductRoute = createRoute({
 });
 
 productRoute.openapi(createProductRoute, async (c) => {
-  const body = c.req.valid("json");
+  const payload = c.req.valid("json");
 
-  const slug = createSlug(body.name);
+  const slug = createSlug(payload.name);
 
   try {
     const product = await prisma.product.create({
-      data: { ...body, slug },
+      data: { ...payload, slug },
     });
 
     return c.json(
@@ -240,19 +240,19 @@ const updateProductRoute = createRoute({
 
 productRoute.openapi(updateProductRoute, async (c) => {
   const { id } = c.req.valid("param");
-  const body = c.req.valid("json");
+  const payload = c.req.valid("json");
 
   const existing = await prisma.product.findUnique({ where: { id } });
   if (!existing) {
     return c.json({ error: "Product not found" }, 404);
   }
 
-  const slug = createSlug(body.name);
+  const slug = createSlug(payload.name);
 
   try {
     const product = await prisma.product.update({
       where: { id },
-      data: { ...body, slug },
+      data: { ...payload, slug },
     });
 
     return c.json(
@@ -295,16 +295,16 @@ const patchProductRoute = createRoute({
 
 productRoute.openapi(patchProductRoute, async (c) => {
   const { id } = c.req.valid("param");
-  const body = c.req.valid("json");
+  const payload = c.req.valid("json");
 
   const existing = await prisma.product.findUnique({ where: { id } });
   if (!existing) {
     return c.json({ error: "Product not found" }, 404);
   }
 
-  const updateData: any = { ...body };
-  if (body.name) {
-    updateData.slug = createSlug(body.name);
+  const updateData: any = { ...payload };
+  if (payload.name) {
+    updateData.slug = createSlug(payload.name);
   }
 
   try {
