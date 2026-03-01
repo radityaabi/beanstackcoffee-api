@@ -9,7 +9,22 @@ import {
   MeResponseSchema,
 } from "./schema";
 
-export const authRoute = new OpenAPIHono();
+export const authRoute = new OpenAPIHono({
+  defaultHook: (result, c) => {
+    if (!result.success) {
+      return c.json(
+        {
+          error: "Validation failed",
+          details: result.error.issues.map((issue) => ({
+            path: issue.path.join("."),
+            message: issue.message,
+          })),
+        },
+        422,
+      );
+    }
+  },
+});
 
 const tags = ["Auth"];
 
