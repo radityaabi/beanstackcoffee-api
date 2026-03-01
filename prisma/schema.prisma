@@ -24,7 +24,7 @@ model Product {
 
   slug          String     @unique
   name          String     @unique @db.VarChar(100)
-  sku           String     @unique @db.VarChar(20)
+  sku           String     @unique @db.VarChar(50)
   type          CoffeeType
   price         Int        @default(0)
   weight        Int        @default(0)

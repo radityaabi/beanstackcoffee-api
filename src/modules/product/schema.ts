@@ -4,7 +4,7 @@ export const CoffeeTypeEnum = z.enum(["ARABICA", "ROBUSTA", "BLEND"]);
 
 export const ProductBaseSchema = z.object({
   name: z.string().min(1).max(100).openapi({ example: "Mens Rea Blend" }),
-  sku: z.string().min(1).max(20).openapi({ example: "CF-BEANS-001" }),
+  sku: z.string().min(1).max(100).openapi({ example: "CF-BEANS-001" }),
   type: CoffeeTypeEnum,
   price: z.number().int().positive().openapi({ example: 149000 }),
   weight: z
