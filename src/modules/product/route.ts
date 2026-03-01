@@ -38,7 +38,7 @@ productRoute.openapi(getProductsRoute, async (c) => {
   const query = c.req.valid("query");
 
   const page = Math.max(1, parseInt(query.page || "1"));
-  const limit = Math.min(50, Math.max(1, parseInt(query.limit || "10")));
+  const limit = Math.min(50, Math.max(1, parseInt(query.limit || "9")));
   const skip = (page - 1) * limit;
 
   // Build where clause
