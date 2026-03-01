@@ -13,6 +13,7 @@ const app = new OpenAPIHono();
 
 // ─── Middleware ───
 app.use(logger());
+
 app.use(
   "/*",
   cors({

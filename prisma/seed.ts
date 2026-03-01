@@ -19,7 +19,7 @@ async function main() {
         slug: slug,
       },
     });
-    console.log(`  ✅ ${result.name} (${result.sku})`);
+    console.log(`☕ ${result.name} (${result.sku})`);
   }
 
   console.log(`\n🎉 Seeded ${products.length} products successfully!`);
