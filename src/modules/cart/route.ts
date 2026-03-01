@@ -202,7 +202,7 @@ cartRoute.openapi(removeCartItemRoute, async (c) => {
     return c.json({ error: "Cart not found" }, 404);
   }
 
-  const cartItem = await prisma.cartItem.findFirst({
+  const cartItem = await prisma.cartItem.findUnique({
     where: { id, cartId: cart.id },
   });
 
@@ -250,7 +250,7 @@ cartRoute.openapi(updateCartItemRoute, async (c) => {
     return c.json({ error: "Cart not found" }, 404);
   }
 
-  const cartItem = await prisma.cartItem.findFirst({
+  const cartItem = await prisma.cartItem.findUnique({
     where: { id, cartId: cart.id },
     include: { product: true },
   });
