@@ -48,6 +48,7 @@ productRoute.openapi(getProductsRoute, async (c) => {
   if (query.search) {
     where.OR = [
       { name: { contains: query.search, mode: "insensitive" } },
+      { type: { contains: query.search, mode: "insensitive" } },
       { description: { contains: query.search, mode: "insensitive" } },
     ];
   }
