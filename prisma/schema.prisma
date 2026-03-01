@@ -45,15 +45,15 @@ model User {
   email    String @unique
   password String
 
-  cart    Cart?
-  tokens  UserToken[]
+  cart   Cart?
+  tokens UserToken[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
 
 model UserToken {
-  id           String   @id @default(ulid())
+  id String @id @default(ulid())
 
   userId       String
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -61,7 +61,7 @@ model UserToken {
   refreshToken String   @unique
   expiresAt    DateTime
 
-  createdAt    DateTime @default(now())
+  createdAt DateTime @default(now())
 }
 
 model Cart {
