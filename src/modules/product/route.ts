@@ -78,29 +78,14 @@ productRoute.openapi(getProductsRoute, async (c) => {
   const sortOrder = query.sortOrder || "desc";
   const orderBy = { [sortBy]: sortOrder };
 
-  const [products, totalItems] = await Promise.all([
-    prisma.product.findMany({
-      where,
-      orderBy,
-      skip,
-      take: limit,
-    }),
-    prisma.product.count({ where }),
-  ]);
+  const products = await prisma.product.findMany({
+    where,
+    orderBy,
+    skip,
+    take: limit,
+  });
 
-  const totalPages = Math.ceil(totalItems / limit);
-
-  return c.json(
-    {
-      data: products.map((product) => ({
-        ...product,
-        createdAt: product.createdAt.toISOString(),
-        updatedAt: product.updatedAt.toISOString(),
-      })),
-      pagination: { page, limit, totalItems, totalPages },
-    },
-    200,
-  );
+  return c.json(products, 200);
 });
 
 // ─── GET /products/:slug ── Get product by slug ───
@@ -133,8 +118,6 @@ productRoute.openapi(getProductBySlugRoute, async (c) => {
   return c.json(
     {
       ...product,
-      createdAt: product.createdAt.toISOString(),
-      updatedAt: product.updatedAt.toISOString(),
     },
     200,
   );
@@ -173,8 +156,6 @@ productRoute.openapi(createProductRoute, async (c) => {
     return c.json(
       {
         ...product,
-        createdAt: product.createdAt.toISOString(),
-        updatedAt: product.updatedAt.toISOString(),
       },
       201,
     );
@@ -259,8 +240,6 @@ productRoute.openapi(updateProductRoute, async (c) => {
     return c.json(
       {
         ...product,
-        createdAt: product.createdAt.toISOString(),
-        updatedAt: product.updatedAt.toISOString(),
       },
       200,
     );
@@ -317,8 +296,6 @@ productRoute.openapi(patchProductRoute, async (c) => {
     return c.json(
       {
         ...product,
-        createdAt: product.createdAt.toISOString(),
-        updatedAt: product.updatedAt.toISOString(),
       },
       200,
     );

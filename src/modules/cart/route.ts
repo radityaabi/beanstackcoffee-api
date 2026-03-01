@@ -64,11 +64,7 @@ function formatCart(cart: any) {
         description: item.product.description,
       },
       quantity: item.quantity,
-      createdAt: item.createdAt.toISOString(),
-      updatedAt: item.updatedAt.toISOString(),
     })),
-    createdAt: cart.createdAt.toISOString(),
-    updatedAt: cart.updatedAt.toISOString(),
   };
 }
 

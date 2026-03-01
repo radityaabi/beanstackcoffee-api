@@ -194,8 +194,6 @@ authRoute.openapi(meRoute, async (c) => {
   return c.json(
     {
       ...user,
-      createdAt: user.createdAt.toISOString(),
-      updatedAt: user.updatedAt.toISOString(),
     },
     200,
   );

@@ -35,8 +35,6 @@ userRoute.openapi(getUsersRoute, async (c) => {
   return c.json(
     users.map((user) => ({
       ...user,
-      createdAt: user.createdAt.toISOString(),
-      updatedAt: user.updatedAt.toISOString(),
     })),
     200,
   );
@@ -81,8 +79,6 @@ userRoute.openapi(getUserByUsernameRoute, async (c) => {
   return c.json(
     {
       ...user,
-      createdAt: user.createdAt.toISOString(),
-      updatedAt: user.updatedAt.toISOString(),
     },
     200,
   );
