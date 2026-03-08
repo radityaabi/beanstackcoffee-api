@@ -87,14 +87,18 @@ export const ProductQuerySchema = z.object({
 });
 
 export const PaginationSchema = z.object({
-  page: z.number().int(),
-  limit: z.number().int(),
-  totalItems: z.number().int(),
-  totalPages: z.number().int(),
+  page: z.number().int().openapi({ example: 1 }),
+  limit: z.number().int().openapi({ example: 10 }),
+  total: z.number().int().openapi({ example: 50 }),
+  totalPages: z.number().int().openapi({ example: 5 }),
 });
 
-export const PaginatedProductsSchema =
-  ProductsSchema.openapi("PaginatedProducts");
+export const PaginatedProductsSchema = z
+  .object({
+    data: ProductsSchema.openapi({ description: "Array of products" }),
+    pagination: PaginationSchema.openapi({ description: "Pagination metadata" }),
+  })
+  .openapi("PaginatedProducts");
 
 export type Product = z.infer<typeof ProductSchema>;
 export type CreateProductInput = z.infer<typeof CreateProductSchema>;

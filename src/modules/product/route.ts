@@ -1,4 +1,5 @@
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
+import { z } from "@hono/zod-openapi";
 import { prisma } from "../../lib/prisma";
 import { createSlug } from "../common/utils";
 import {
@@ -29,6 +30,20 @@ const getProductsRoute = createRoute({
   responses: {
     200: {
       description: "Paginated list of products",
+      headers: z.object({
+        "Link": z.string().openapi({
+          description: "Pagination links (first, prev, next, last) in GitHub style",
+          example: '<http://example.com/products?page=1>; rel="first", <http://example.com/products?page=2>; rel="next">'
+        }),
+        "X-Total-Count": z.string().openapi({
+          description: "Total number of products matching the query",
+          example: "50"
+        }),
+        "X-Total-Pages": z.string().openapi({
+          description: "Total number of pages available",
+          example: "5"
+        }),
+      }),
       content: { "application/json": { schema: PaginatedProductsSchema } },
     },
   },
@@ -84,6 +99,38 @@ productRoute.openapi(getProductsRoute, async (c) => {
     skip,
     take: limit,
   });
+
+  const totalItems = products.length < limit ? skip + products.length : await prisma.product.count({ where });
+  const totalPages = Math.ceil(totalItems / limit);
+
+  // Build Link header with pagination
+  const url = new URL(c.req.url);
+  const baseUrl = `${url.origin}${url.pathname}`;  
+  
+  const paramsBase = new URLSearchParams(
+    Object.entries(query)
+      .filter(([key, variable]) => key !== "page" && key !== "limit" && variable !== undefined && variable !== null && variable !== "")
+      .map(([key, variable]) => [key, String(variable)])
+  );
+
+  paramsBase.set("limit", String(limit));
+
+  const buildLink = (p: number) => {
+    const params = new URLSearchParams(paramsBase); // clone
+    params.set("page", String(p));
+    return `<${baseUrl}?${params.toString()}>`;
+  };
+
+  const links: string[] = [
+    `${buildLink(1)}; rel="first"`,
+    ...(page > 1 ? [`${buildLink(page - 1)}; rel="prev"`] : []),
+    ...(page < totalPages ? [`${buildLink(page + 1)}; rel="next"`] : []),
+    `${buildLink(totalPages)}; rel="last"`,
+  ];
+
+  c.header("Link", links.join(", "));
+  c.header("X-Total-Count", String(totalItems));
+  c.header("X-Total-Pages", String(totalPages));
 
   return c.json(products, 200);
 });
