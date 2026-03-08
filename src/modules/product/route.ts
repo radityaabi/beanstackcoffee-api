@@ -4,7 +4,7 @@ import { prisma } from "../../lib/prisma";
 import { createSlug } from "../common/utils";
 import {
   ProductSchema,
-  PaginatedProductsSchema,
+  ProductsSchema,
   GetProductParamSchema,
   GetProductByIdParamSchema,
   CreateProductSchema,
@@ -44,7 +44,7 @@ const getProductsRoute = createRoute({
           example: "5"
         }),
       }),
-      content: { "application/json": { schema: PaginatedProductsSchema } },
+      content: { "application/json": { schema: ProductsSchema } },
     },
   },
 });

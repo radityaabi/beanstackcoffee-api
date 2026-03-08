@@ -93,12 +93,9 @@ export const PaginationSchema = z.object({
   totalPages: z.number().int().openapi({ example: 5 }),
 });
 
-export const PaginatedProductsSchema = z
-  .object({
-    data: ProductsSchema.openapi({ description: "Array of products" }),
-    pagination: PaginationSchema.openapi({ description: "Pagination metadata" }),
-  })
-  .openapi("PaginatedProducts");
+export const PaginatedProductsSchema = ProductsSchema.openapi(
+  "PaginatedProducts"
+);
 
 export type Product = z.infer<typeof ProductSchema>;
 export type CreateProductInput = z.infer<typeof CreateProductSchema>;
