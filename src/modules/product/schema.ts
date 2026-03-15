@@ -4,11 +4,7 @@ import { ProductModelSchema } from "../../generated/zod/schemas";
 export const CoffeeTypeEnum = z.enum(["ARABICA", "ROBUSTA", "BLEND"]);
 
 export const ProductBaseSchema = ProductModelSchema.omit({
-  id: true,
-  slug: true,
   cartItems: true,
-  createdAt: true,
-  updatedAt: true,
 }).extend({
   name: z.string().min(1).max(100).openapi({ example: "Mens Rea Blend" }),
   sku: z.string().min(1).max(100).openapi({ example: "CF-BEANS-001" }),
@@ -28,8 +24,15 @@ export const ProductBaseSchema = ProductModelSchema.omit({
   }),
 });
 
-export const SeedProductSchema = z
-  .array(ProductBaseSchema)
+export const SeedProductSchema = ProductBaseSchema.omit({
+  id: true,
+  slug: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const SeedProductsSchema = z
+  .array(SeedProductSchema)
   .openapi("SeedProduct");
 
 export const ProductSchema = ProductModelSchema.omit({
@@ -46,7 +49,14 @@ export const GetProductByIdParamSchema = z.object({
   id: z.string().min(1).openapi({ example: "01JMXYZ..." }),
 });
 
-export const CreateProductSchema = ProductBaseSchema.openapi("CreateProduct");
+export const CreateProductSchema = ProductBaseSchema.openapi(
+  "CreateProduct",
+).omit({
+  id: true,
+  slug: true,
+  createdAt: true,
+  updatedAt: true,
+});
 
 export const UpdateProductSchema = ProductBaseSchema.omit({
   sku: true,
@@ -55,8 +65,6 @@ export const UpdateProductSchema = ProductBaseSchema.omit({
   price: true,
   weight: true,
   stockQuantity: true,
-  imageUrl: true,
-  description: true,
 })
   .extend({
     sku: z.string().min(1).max(100).optional(),
@@ -107,4 +115,5 @@ export const PaginatedProductsSchema =
 export type Product = z.infer<typeof ProductSchema>;
 export type CreateProductInput = z.infer<typeof CreateProductSchema>;
 export type UpdateProductInput = z.infer<typeof UpdateProductSchema>;
-export type SeedProducts = z.infer<typeof SeedProductSchema>;
+export type SeedProduct = z.infer<typeof SeedProductSchema>;
+export type SeedProducts = z.infer<typeof SeedProductsSchema>;
