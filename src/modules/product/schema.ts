@@ -32,11 +32,8 @@ export const SeedProductSchema = z
   .array(ProductBaseSchema)
   .openapi("SeedProduct");
 
-export const ProductSchema = ProductBaseSchema.extend({
-  id: z.string(),
-  slug: z.string(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
+export const ProductSchema = ProductModelSchema.omit({
+  cartItems: true,
 }).openapi("Product");
 
 export const ProductsSchema = z.array(ProductSchema);
