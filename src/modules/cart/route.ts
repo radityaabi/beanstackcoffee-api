@@ -3,7 +3,6 @@ import { prisma } from "../../lib/prisma";
 import { authMiddleware } from "../../lib/auth";
 import {
   CartSchema,
-  CartItemSchema,
   AddToCartSchema,
   UpdateCartItemSchema,
   CartItemParamSchema,
@@ -40,32 +39,12 @@ async function getOrCreateCart(userId: string) {
     });
   }
 
-  return cart;
-}
+  const totalPrice = cart.items.reduce(
+    (total, item) => total + item.product.price * item.quantity,
+    0,
+  );
 
-// Helper: format cart for response
-function formatCart(cart: any) {
-  return {
-    id: cart.id,
-    userId: cart.userId,
-    items: cart.items.map((item: any) => ({
-      id: item.id,
-      productId: item.productId,
-      product: {
-        id: item.product.id,
-        slug: item.product.slug,
-        name: item.product.name,
-        sku: item.product.sku,
-        type: item.product.type,
-        price: item.product.price,
-        weight: item.product.weight,
-        stockQuantity: item.product.stockQuantity,
-        imageUrl: item.product.imageUrl,
-        description: item.product.description,
-      },
-      quantity: item.quantity,
-    })),
-  };
+  return { ...cart, totalPrice };
 }
 
 // ─── GET /cart ── Get user's cart ───
@@ -87,7 +66,7 @@ const getCartRoute = createRoute({
 cartRoute.openapi(getCartRoute, async (c) => {
   const userId = c.get("userId" as never) as string;
   const cart = await getOrCreateCart(userId);
-  return c.json(formatCart(cart), 200);
+  return c.json(cart, 200);
 });
 
 // ─── PUT /cart/items ── Add product to cart ───
@@ -166,7 +145,7 @@ cartRoute.openapi(addToCartRoute, async (c) => {
   }
 
   const updatedCart = await getOrCreateCart(userId);
-  return c.json(formatCart(updatedCart), 200);
+  return c.json(updatedCart, 200);
 });
 
 // ─── DELETE /cart/items/:id ── Remove item from cart ───
@@ -209,7 +188,7 @@ cartRoute.openapi(removeCartItemRoute, async (c) => {
   await prisma.cartItem.delete({ where: { id } });
 
   const updatedCart = await getOrCreateCart(userId);
-  return c.json(formatCart(updatedCart), 200);
+  return c.json(updatedCart, 200);
 });
 
 // ─── PATCH /cart/items/:id ── Update item quantity ───
@@ -270,5 +249,5 @@ cartRoute.openapi(updateCartItemRoute, async (c) => {
   });
 
   const updatedCart = await getOrCreateCart(userId);
-  return c.json(formatCart(updatedCart), 200);
+  return c.json(updatedCart, 200);
 });

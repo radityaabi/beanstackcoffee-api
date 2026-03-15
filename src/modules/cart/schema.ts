@@ -13,15 +13,10 @@ export const CartItemSchema = z
   })
   .openapi("CartItem");
 
-export const CartSchema = z
-  .object({
-    id: z.string(),
-    userId: z.string(),
-    items: z.array(CartItemSchema),
-    createdAt: z.string(),
-    updatedAt: z.string(),
-  })
-  .openapi("Cart");
+export const CartSchema = CartModelSchema.extend({
+  items: z.array(CartItemSchema),
+  totalPrice: z.number().int().openapi({ example: 100000 }),
+}).openapi("Cart");
 
 export const AddToCartSchema = z
   .object({
