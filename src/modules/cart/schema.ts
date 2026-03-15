@@ -7,10 +7,15 @@ import {
 
 export const CartItemSchema = CartItemModelSchema.strip()
   .extend({
-    product: ProductSchema,
+    product: ProductSchema.strip().omit({
+      createdAt: true,
+      updatedAt: true,
+    }),
   })
   .omit({
     cartId: true,
+    createdAt: true,
+    updatedAt: true,
   })
   .openapi("CartItem");
 

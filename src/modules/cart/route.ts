@@ -17,19 +17,9 @@ cartRoute.use("/*", authMiddleware);
 
 // Helper: get or create cart for user
 async function getOrCreateCart(userId: string) {
-  let cart = await prisma.cart.findUnique({
-    where: { userId },
-    include: {
-      items: {
-        include: { product: true },
-        orderBy: { createdAt: "desc" },
-      },
-    },
-  });
-
-  if (!cart) {
-    cart = await prisma.cart.create({
-      data: { userId },
+  try {
+    let cart = await prisma.cart.findUnique({
+      where: { userId },
       include: {
         items: {
           include: { product: true },
@@ -37,14 +27,28 @@ async function getOrCreateCart(userId: string) {
         },
       },
     });
+
+    if (!cart) {
+      cart = await prisma.cart.create({
+        data: { userId },
+        include: {
+          items: {
+            include: { product: true },
+            orderBy: { createdAt: "desc" },
+          },
+        },
+      });
+    }
+
+    const totalPrice = cart.items.reduce(
+      (total, item) => total + item.product.price * item.quantity,
+      0,
+    );
+    return { ...cart, totalPrice };
+  } catch (error) {
+    console.error("Error getting or creating cart:", error);
+    throw new Error("Failed to get or create cart");
   }
-
-  const totalPrice = cart.items.reduce(
-    (total, item) => total + item.product.price * item.quantity,
-    0,
-  );
-
-  return { ...cart, totalPrice };
 }
 
 // ─── GET /cart ── Get user's cart ───
@@ -59,15 +63,21 @@ const getCartRoute = createRoute({
       description: "User's cart with items",
       content: { "application/json": { schema: CartSchema } },
     },
-    401: { description: "Unauthorized" },
+    400: {
+      description: "Failed to get cart",
+    },
   },
 });
 
 cartRoute.openapi(getCartRoute, async (c) => {
   const userId = c.get("userId" as never) as string;
-  const cart = await getOrCreateCart(userId);
-  const parsed = CartSchema.parse(cart);
-  return c.json(parsed, 200);
+  try {
+    const cart = await getOrCreateCart(userId);
+    const parsed = CartSchema.parse(cart);
+    return c.json(parsed, 200);
+  } catch {
+    return c.json({ status: "failed", error: "Failed to get cart" }, 400);
+  }
 });
 
 // ─── PUT /cart/items ── Add product to cart ───
@@ -89,8 +99,10 @@ const addToCartRoute = createRoute({
       description: "Product added to cart",
       content: { "application/json": { schema: CartSchema } },
     },
-    400: { description: "Product not found or insufficient stock" },
+    400: { description: "Insufficient stock" },
     401: { description: "Unauthorized" },
+    404: { description: "Product not found" },
+    500: { description: "Failed to add product to cart" },
   },
 });
 
@@ -98,55 +110,62 @@ cartRoute.openapi(addToCartRoute, async (c) => {
   const userId = c.get("userId" as never) as string;
   const { productId, quantity } = c.req.valid("json");
 
-  // Verify product exists and has stock
-  const product = await prisma.product.findUnique({
-    where: { id: productId },
-  });
+  try {
+    const result = await prisma.$transaction(async (transaction) => {
+      const [product, cart] = await Promise.all([
+        transaction.product.findUnique({ where: { id: productId } }),
+        transaction.cart.upsert({
+          where: { userId },
+          create: { userId },
+          update: {},
+        }),
+      ]);
 
-  if (!product) {
-    return c.json({ error: "Product not found" }, 400);
-  }
+      if (!product) throw { status: 404, error: "Product not found" };
+      if (product.stockQuantity < quantity) {
+        throw {
+          status: 400,
+          error: `Insufficient stock. Available: ${product.stockQuantity}`,
+        };
+      }
 
-  if (product.stockQuantity < quantity) {
-    return c.json(
-      { error: `Insufficient stock. Available: ${product.stockQuantity}` },
-      400,
-    );
-  }
+      const existingItem = await transaction.cartItem.findUnique({
+        where: { cartId_productId: { cartId: cart.id, productId } },
+      });
 
-  // Get or create cart
-  let cart = await prisma.cart.findUnique({ where: { userId } });
-  if (!cart) {
-    cart = await prisma.cart.create({ data: { userId } });
-  }
+      const newQuantity = (existingItem?.quantity ?? 0) + quantity;
+      if (newQuantity > product.stockQuantity) {
+        throw {
+          status: 400,
+          error: `Cannot add more. Current in cart: ${existingItem?.quantity}, Stock: ${product.stockQuantity}`,
+        };
+      }
 
-  // Upsert cart item (add quantity if exists)
-  const existingItem = await prisma.cartItem.findUnique({
-    where: { cartId_productId: { cartId: cart.id, productId } },
-  });
+      const [updatedItem] = await Promise.all([
+        transaction.cartItem.upsert({
+          where: { cartId_productId: { cartId: cart.id, productId } },
+          create: { cartId: cart.id, productId, quantity },
+          update: { quantity: newQuantity },
+          include: { product: true },
+        }),
+        transaction.cart.update({
+          where: { id: cart.id },
+          data: { updatedAt: new Date() },
+        }),
+      ]);
 
-  if (existingItem) {
-    const newQuantity = existingItem.quantity + quantity;
-    if (newQuantity > product.stockQuantity) {
-      return c.json(
-        {
-          error: `Cannot add more. Current in cart: ${existingItem.quantity}, Stock: ${product.stockQuantity}`,
-        },
-        400,
-      );
+      return { cart, updatedItem };
+    });
+
+    const updatedCart = await getOrCreateCart(userId);
+    const parsed = CartSchema.parse(updatedCart);
+    return c.json(parsed, 200);
+  } catch (error: any) {
+    if (error?.status) {
+      return c.json({ error: error.error }, error.status);
     }
-    await prisma.cartItem.update({
-      where: { id: existingItem.id },
-      data: { quantity: newQuantity },
-    });
-  } else {
-    await prisma.cartItem.create({
-      data: { cartId: cart.id, productId, quantity },
-    });
+    return c.json({ error: "Failed to add product to cart" }, 500);
   }
-
-  const updatedCart = await getOrCreateCart(userId);
-  return c.json(updatedCart, 200);
 });
 
 // ─── DELETE /cart/items/:id ── Remove item from cart ───
@@ -164,8 +183,9 @@ const removeCartItemRoute = createRoute({
       description: "Item removed from cart",
       content: { "application/json": { schema: CartSchema } },
     },
-    404: { description: "Cart item not found" },
     401: { description: "Unauthorized" },
+    404: { description: "Cart item not found" },
+    500: { description: "Failed to remove cart item" },
   },
 });
 
@@ -173,23 +193,29 @@ cartRoute.openapi(removeCartItemRoute, async (c) => {
   const userId = c.get("userId" as never) as string;
   const { id } = c.req.valid("param");
 
-  const cart = await prisma.cart.findUnique({ where: { userId } });
-  if (!cart) {
-    return c.json({ error: "Cart not found" }, 404);
+  try {
+    await prisma.$transaction(async (transaction) => {
+      const cartItem = await transaction.cartItem.findFirst({
+        where: { id, cart: { userId } },
+      });
+
+      if (!cartItem) throw { status: 404, error: "Cart item not found" };
+
+      await Promise.all([
+        transaction.cartItem.delete({ where: { id } }),
+        transaction.cart.update({
+          where: { id: cartItem.cartId },
+          data: { updatedAt: new Date() },
+        }),
+      ]);
+    });
+
+    const updatedCart = await getOrCreateCart(userId);
+    return c.json(CartSchema.parse(updatedCart), 200);
+  } catch (error: any) {
+    if (error?.status) return c.json({ error: error.error }, error.status);
+    return c.json({ error: "Failed to remove cart item" }, 500);
   }
-
-  const cartItem = await prisma.cartItem.findUnique({
-    where: { id, cartId: cart.id },
-  });
-
-  if (!cartItem) {
-    return c.json({ error: "Cart item not found" }, 404);
-  }
-
-  await prisma.cartItem.delete({ where: { id } });
-
-  const updatedCart = await getOrCreateCart(userId);
-  return c.json(updatedCart, 200);
 });
 
 // ─── PATCH /cart/items/:id ── Update item quantity ───
@@ -211,8 +237,9 @@ const updateCartItemRoute = createRoute({
       content: { "application/json": { schema: CartSchema } },
     },
     400: { description: "Insufficient stock" },
-    404: { description: "Cart item not found" },
     401: { description: "Unauthorized" },
+    404: { description: "Cart item not found" },
+    500: { description: "Failed to update cart item" },
   },
 });
 
@@ -221,34 +248,34 @@ cartRoute.openapi(updateCartItemRoute, async (c) => {
   const { id } = c.req.valid("param");
   const { quantity } = c.req.valid("json");
 
-  const cart = await prisma.cart.findUnique({ where: { userId } });
-  if (!cart) {
-    return c.json({ error: "Cart not found" }, 404);
+  try {
+    await prisma.$transaction(async (transaction) => {
+      const cartItem = await transaction.cartItem.findFirst({
+        where: { id, cart: { userId } },
+        include: { product: true },
+      });
+
+      if (!cartItem) throw { status: 404, error: "Cart item not found" };
+      if (quantity > cartItem.product.stockQuantity) {
+        throw {
+          status: 400,
+          error: `Insufficient stock. Available: ${cartItem.product.stockQuantity}`,
+        };
+      }
+
+      await Promise.all([
+        transaction.cartItem.update({ where: { id }, data: { quantity } }),
+        transaction.cart.update({
+          where: { id: cartItem.cartId },
+          data: { updatedAt: new Date() },
+        }),
+      ]);
+    });
+
+    const updatedCart = await getOrCreateCart(userId);
+    return c.json(CartSchema.parse(updatedCart), 200);
+  } catch (err: any) {
+    if (err?.status) return c.json({ error: err.error }, err.status);
+    return c.json({ error: "Failed to update cart item" }, 500);
   }
-
-  const cartItem = await prisma.cartItem.findUnique({
-    where: { id, cartId: cart.id },
-    include: { product: true },
-  });
-
-  if (!cartItem) {
-    return c.json({ error: "Cart item not found" }, 404);
-  }
-
-  if (quantity > cartItem.product.stockQuantity) {
-    return c.json(
-      {
-        error: `Insufficient stock. Available: ${cartItem.product.stockQuantity}`,
-      },
-      400,
-    );
-  }
-
-  await prisma.cartItem.update({
-    where: { id },
-    data: { quantity },
-  });
-
-  const updatedCart = await getOrCreateCart(userId);
-  return c.json(updatedCart, 200);
 });
