@@ -1,8 +1,15 @@
 import { z } from "@hono/zod-openapi";
+import { ProductModelSchema } from "../../generated/zod/schemas";
 
 export const CoffeeTypeEnum = z.enum(["ARABICA", "ROBUSTA", "BLEND"]);
 
-export const ProductBaseSchema = z.object({
+export const ProductBaseSchema = ProductModelSchema.omit({
+  id: true,
+  slug: true,
+  cartItems: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
   name: z.string().min(1).max(100).openapi({ example: "Mens Rea Blend" }),
   sku: z.string().min(1).max(100).openapi({ example: "CF-BEANS-001" }),
   type: CoffeeTypeEnum,
@@ -20,6 +27,7 @@ export const ProductBaseSchema = z.object({
     example: "A bold and complex blend of Arabica and Robusta beans...",
   }),
 });
+
 export const SeedProductSchema = z
   .array(ProductBaseSchema)
   .openapi("SeedProduct");
@@ -49,14 +57,24 @@ export const UpdateProductSchema = ProductBaseSchema.omit({
   type: true,
   price: true,
   weight: true,
+  stockQuantity: true,
+  imageUrl: true,
+  description: true,
 })
   .extend({
-    sku: z.string().min(1).max(20).optional(),
+    sku: z.string().min(1).max(100).optional(),
     name: z.string().min(1).max(100).optional(),
     type: CoffeeTypeEnum.optional(),
     price: z.number().int().positive().optional(),
     weight: z.number().int().positive().optional(),
     stockQuantity: z.number().int().min(0).optional(),
+    imageUrl: z.string().nullable().optional().openapi({
+      example:
+        "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=600",
+    }),
+    description: z.string().nullable().optional().openapi({
+      example: "A bold and complex blend of Arabica and Robusta beans...",
+    }),
   })
   .openapi("UpdateProduct");
 
@@ -86,16 +104,8 @@ export const ProductQuerySchema = z.object({
   sortOrder: z.enum(["asc", "desc"]).optional().openapi({ example: "asc" }),
 });
 
-export const PaginationSchema = z.object({
-  page: z.number().int().openapi({ example: 1 }),
-  limit: z.number().int().openapi({ example: 10 }),
-  total: z.number().int().openapi({ example: 50 }),
-  totalPages: z.number().int().openapi({ example: 5 }),
-});
-
-export const PaginatedProductsSchema = ProductsSchema.openapi(
-  "PaginatedProducts"
-);
+export const PaginatedProductsSchema =
+  ProductsSchema.openapi("PaginatedProducts");
 
 export type Product = z.infer<typeof ProductSchema>;
 export type CreateProductInput = z.infer<typeof CreateProductSchema>;
