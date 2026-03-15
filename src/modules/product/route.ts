@@ -242,20 +242,25 @@ const deleteProductRoute = createRoute({
   responses: {
     200: { description: "Product deleted successfully" },
     404: { description: "Product not found" },
+    500: { description: "Failed to delete product" },
   },
 });
 
 productRoute.openapi(deleteProductRoute, async (c) => {
   const { id } = c.req.valid("param");
 
-  const existing = await prisma.product.findUnique({ where: { id } });
-  if (!existing) {
-    return c.json({ error: "Product not found" }, 404);
+  try {
+    const existing = await prisma.product.findUnique({ where: { id } });
+    if (!existing) {
+      return c.json({ error: "Product not found" }, 404);
+    }
+
+    await prisma.product.delete({ where: { id } });
+
+    return c.json({ message: "Product deleted successfully" }, 200);
+  } catch (error) {
+    return c.json({ error: "Failed to delete product" }, 500);
   }
-
-  await prisma.product.delete({ where: { id } });
-
-  return c.json({ message: "Product deleted successfully" }, 200);
 });
 
 // ─── PUT /products/:id ── Update product by id (full replace) ───
@@ -284,29 +289,18 @@ productRoute.openapi(updateProductRoute, async (c) => {
   const { id } = c.req.valid("param");
   const payload = c.req.valid("json");
 
-  const existing = await prisma.product.findUnique({ where: { id } });
-  if (!existing) {
-    return c.json({ error: "Product not found" }, 404);
-  }
-
-  const slug = createSlug(payload.name);
-
   try {
     const product = await prisma.product.update({
       where: { id },
-      data: { ...payload, slug },
+      data: { ...payload, slug: createSlug(payload.name) },
     });
 
-    return c.json(
-      {
-        ...product,
-      },
-      200,
-    );
+    return c.json(ProductSchema.parse(product), 200);
   } catch (error: any) {
-    if (error?.code === "P2002") {
+    if (error?.code === "P2025")
+      return c.json({ error: "Product not found" }, 404);
+    if (error?.code === "P2002")
       return c.json({ error: "Conflict with existing product" }, 409);
-    }
     throw error;
   }
 });
@@ -337,32 +331,21 @@ productRoute.openapi(patchProductRoute, async (c) => {
   const { id } = c.req.valid("param");
   const payload = c.req.valid("json");
 
-  const existing = await prisma.product.findUnique({ where: { id } });
-  if (!existing) {
-    return c.json({ error: "Product not found" }, 404);
-  }
-
-  const updateData: any = { ...payload };
-  if (payload.name) {
-    updateData.slug = createSlug(payload.name);
-  }
-
   try {
     const product = await prisma.product.update({
       where: { id },
-      data: updateData,
+      data: {
+        ...payload,
+        ...(payload.name && { slug: createSlug(payload.name) }),
+      },
     });
 
-    return c.json(
-      {
-        ...product,
-      },
-      200,
-    );
+    return c.json(ProductSchema.parse(product), 200);
   } catch (error: any) {
-    if (error?.code === "P2002") {
+    if (error?.code === "P2025")
+      return c.json({ error: "Product not found" }, 404);
+    if (error?.code === "P2002")
       return c.json({ error: "Conflict with existing product" }, 409);
-    }
     throw error;
   }
 });
