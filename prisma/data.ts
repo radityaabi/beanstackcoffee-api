@@ -9,7 +9,7 @@ export const products: SeedProducts = [
     weight: 340,
     stockQuantity: 50,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/3afeafd7-7776-40cd-a64f-6f3f23e8e9a1/mensreablend.png",
+      "https://2xm7hdufl9.ucarecd.net/8a1c8f60-190a-48cd-b87d-591e61c9d467/",
     description:
       "Blend yang bold dan kompleks, memadukan kedalaman earthy Robusta Sumatra dengan keasaman cerah Arabika Toraja. Roast medium-dark dengan cita rasa dark chocolate, kayu cedar, dan sentuhan buah tropis. Cocok untuk pecinta espresso.",
   },
@@ -21,7 +21,7 @@ export const products: SeedProducts = [
     weight: 250,
     stockQuantity: 35,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/d6c1d6a7-5ab0-4422-b2d3-2750f854a727/torajakalosiarabica.png",
+      "https://2xm7hdufl9.ucarecd.net/1aa502af-1e02-471d-aef4-fefad3c2f3f6/",
     description:
       "Arabika single-origin dari dataran tinggi Tana Toraja, Sulawesi Selatan. Diproses wet-hulled dan dijemur di ketinggian 1.500 mdpl. Profil rasa kompleks dengan nuansa beri gelap, rempah, dan manis smoky yang tahan lama.",
   },
@@ -33,7 +33,7 @@ export const products: SeedProducts = [
     weight: 340,
     stockQuantity: 25,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/3cd44a25-d8fc-4d52-a977-fc566af061c2/gayomountainreserve.png",
+      "https://2xm7hdufl9.ucarecd.net/7bc8b2e6-0298-4a62-8535-2764c6b5a49d/",
     description:
       "Arabika premium dari dataran tinggi vulkanik Gayo, Aceh. Ditanam di ketinggian 1.400–1.600 mdpl oleh koperasi lokal. Roast medium dengan keasaman citrus yang cerah, manis madu, dan akhir rasa bersih seperti teh.",
   },
@@ -45,7 +45,7 @@ export const products: SeedProducts = [
     weight: 250,
     stockQuantity: 40,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/d10427cc-0e1d-41a1-9353-393ddcfe73bb/javapreangerestate.png",
+      "https://2xm7hdufl9.ucarecd.net/54ba691c-f7b1-4190-9c37-dcc1e5fa9804/",
     description:
       "Arabika estate dari dataran tinggi Preanger, Jawa Barat. Kopi klasik Jawa dengan roast medium-dark, body tebal, keasaman rendah, serta cita rasa herbal, malt, dan cokelat pahit manis.",
   },
@@ -57,7 +57,7 @@ export const products: SeedProducts = [
     weight: 500,
     stockQuantity: 80,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/b23f0b08-0e7a-42f7-9634-555e67efd627/lampungrobustapremium.png",
+      "https://2xm7hdufl9.ucarecd.net/ad60639b-0cda-4192-92ea-5100fbc9e1df/",
     description:
       "Robusta grade premium dari Lampung, Sumatra Selatan. Dark roast untuk body maksimal dengan rasa earthy yang intens. Nuansa walnut, karamel gelap, dan akhir rasa kuat serta penuh. Ideal untuk kopi gaya Vietnam.",
   },
@@ -69,7 +69,7 @@ export const products: SeedProducts = [
     weight: 250,
     stockQuantity: 15,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/2286c219-a99e-4563-80af-007b13a46bd7/balikintamaninatural.png",
+      "https://2xm7hdufl9.ucarecd.net/55b4ab48-b377-4783-af2b-6c05bf71905d/",
     description:
       "Arabika proses natural dari lereng Gunung Batur, Kintamani. Roast light menonjolkan rasa buah blueberry yang cerah, cokelat susu, dan madu. Ditanam bersama pohon jeruk menggunakan sistem irigasi tradisional subak.",
   },
@@ -81,7 +81,7 @@ export const products: SeedProducts = [
     weight: 250,
     stockQuantity: 20,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/3de93bae-f823-45c1-864d-f7a91b46f9be/floresbajawahoney.png",
+      "https://2xm7hdufl9.ucarecd.net/dc807cec-f613-48a6-932a-850d5e626c03/",
     description:
       "Arabika proses honey dari dataran tinggi Bajawa, Flores, NTT. Roast light-medium dengan body manis seperti sirup. Terdapat rasa mangga tropis, gula aren, dan aroma floral yang lembut.",
   },
@@ -93,7 +93,7 @@ export const products: SeedProducts = [
     weight: 340,
     stockQuantity: 45,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/012333f4-c159-44d7-bd16-0c02e967c687/sumatramandhelinggold.png",
+      "https://2xm7hdufl9.ucarecd.net/6eb275ad-6a03-40ec-bb69-9981bf08bbb4/",
     description:
       "Mandheling grade premium dari Sumatra Utara. Dipilih tiga kali dan diproses wet-hulled untuk kualitas terbaik. Dark roast dengan body penuh dan velvety, keasaman rendah, serta rasa kompleks tembakau pipa, earthy, dan dark chocolate.",
   },
@@ -105,7 +105,7 @@ export const products: SeedProducts = [
     weight: 250,
     stockQuantity: 60,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/57a417a1-01c4-4a3f-9f4b-c4ebfaa3f9fd/temanggungfinerobusta.png",
+      "https://2xm7hdufl9.ucarecd.net/7d2c9543-fde6-4303-971c-2955049d122c/",
     description:
       "Fine Robusta dari lereng Gunung Sumbing, Temanggung, Jawa Tengah. Robusta specialty dengan kompleksitas mengejutkan. Roast medium-dark dengan rasa gula merah, kacang mete, dan akhir nutty yang halus.",
   },
@@ -117,7 +117,7 @@ export const products: SeedProducts = [
     weight: 340,
     stockQuantity: 10,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/95d51b0c-2b17-4d1d-bd44-843160d27436/papuawamenahighland.png",
+      "https://2xm7hdufl9.ucarecd.net/a000c746-2e02-4a09-be40-5fe1aa816d5b/",
     description:
       "Arabika langka dari Lembah Baliem, Papua. Ditanam oleh petani lokal di ketinggian 1.500–2.000 mdpl tanpa bahan kimia. Roast medium dengan karakter unik: floral, fruity dengan sentuhan stone fruit, dan akhir rasa manis yang bersih.",
   },
@@ -129,7 +129,7 @@ export const products: SeedProducts = [
     weight: 250,
     stockQuantity: 70,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/44ef977a-d1a6-4678-a7fd-0ac50c65c759/nusantaramorningblend.png",
+      "https://2xm7hdufl9.ucarecd.net/b604b39f-34e4-4a23-a991-2f627ee25bc7/",
     description:
       "Blend harian yang diracik dari Arabika Jawa dan Robusta Lampung. Roast medium menghasilkan cangkir yang seimbang dan mudah dinikmati, dengan nuansa cokelat susu, almond panggang, dan manis lembut di akhir.",
   },
@@ -141,7 +141,7 @@ export const products: SeedProducts = [
     weight: 340,
     stockQuantity: 18,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/26f0f239-2bf2-443e-962c-fb644d35e5ad/acehgayoorganic.png",
+      "https://2xm7hdufl9.ucarecd.net/894479d3-a41a-490e-80d3-30ec8fe2c2ed/",
     description:
       "Arabika organik bersertifikat dari wilayah Gayo, Aceh. Dipasok melalui koperasi petani kecil dengan prinsip fair-trade. Body kaya dan penuh, dengan lapisan rasa buah gelap, cengkeh, dan molase yang kompleks.",
   },
@@ -153,7 +153,7 @@ export const products: SeedProducts = [
     weight: 250,
     stockQuantity: 30,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/2e63fb83-5ee5-4b21-ba5f-266599c1913c/sulawesienrekangwashed.png",
+      "https://2xm7hdufl9.ucarecd.net/da9defb0-e1d9-4f95-b8eb-4c35a712cd97/",
     description:
       "Arabika fully washed dari dataran tinggi Enrekang, Sulawesi Selatan. Roast medium dengan profil bersih dan cerah, menghadirkan rasa apel hijau, lemon zest, dan gula merah dengan tekstur silky di mulut.",
   },
@@ -165,7 +165,7 @@ export const products: SeedProducts = [
     weight: 250,
     stockQuantity: 8,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/7f059b22-ab9f-4c0e-8310-3894e56d08ab/westjavaciwideypeaberry.png",
+      "https://2xm7hdufl9.ucarecd.net/7450fd16-ea10-436f-a513-6403fcdf9b07/",
     description:
       "Biji peaberry pilihan tangan dari Ciwidey, Bandung. Ukurannya lebih kecil dan padat sehingga menghasilkan roasting lebih merata. Memberikan rasa berry yang cerah, melati, dan sentuhan kakao manis yang intens.",
   },
@@ -177,7 +177,7 @@ export const products: SeedProducts = [
     weight: 250,
     stockQuantity: 38,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/31e5eccd-2531-4e8b-b0f9-c8710b828298/bengkulurejanglebong.png",
+      "https://2xm7hdufl9.ucarecd.net/a06b9f2c-2023-479f-8aa0-6fdae20435db/",
     description:
       "Arabika dari wilayah Rejang Lebong, Bengkulu, Sumatra. Roast medium dengan profil halus dan seimbang, menghadirkan rasa toffee, plum matang, dan sentuhan herbal lembut di akhir.",
   },
@@ -189,7 +189,7 @@ export const products: SeedProducts = [
     weight: 250,
     stockQuantity: 100,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/099de115-16f8-402f-86a6-1872759ab95f/kopijosstraditional.png",
+      "https://2xm7hdufl9.ucarecd.net/5703a4c8-33dc-4c11-8f83-2cc463feaed1/",
     description:
       "Robusta tradisional khas Jawa dengan dark roast klasik. Rasa kuat, smoky, dan woody dengan body tebal seperti sirup. Terinspirasi dari tradisi Kopi Joss khas Yogyakarta.",
   },
@@ -201,7 +201,7 @@ export const products: SeedProducts = [
     weight: 1000,
     stockQuantity: 55,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/01b27281-226f-4019-920f-8fe65ef32590/sundahejogreenbean.png",
+      "https://2xm7hdufl9.ucarecd.net/a959b87f-c1b9-4c18-9ec4-9dc0267fbc4b/",
     description:
       "Biji kopi hijau (belum disangrai) dari wilayah Sunda, Jawa Barat. Cocok untuk home roaster yang ingin mengontrol profil roasting sendiri. Arabika berkualitas tinggi dengan potensi optimal untuk roast light hingga medium.",
   },
@@ -213,7 +213,7 @@ export const products: SeedProducts = [
     weight: 340,
     stockQuantity: 42,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/93dd6dcf-7fc0-4d06-8758-5623c3d5a159/espressonusantarablend.png",
+      "https://2xm7hdufl9.ucarecd.net/a9c87b78-b5f2-407f-99a5-f40825086899/",
     description:
       "Blend espresso khusus yang memadukan Arabika Gayo, Robusta Temanggung, dan Arabika Flores. Dark roast dirancang untuk crema tebal, body kaya, dan profil rasa seimbang dengan nuansa dark chocolate, hazelnut, dan karamel.",
   },
@@ -225,7 +225,7 @@ export const products: SeedProducts = [
     weight: 340,
     stockQuantity: 5,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/eb905ec1-01b6-4ee1-8b7a-3f0f5c6bc97b/liberikamerantirare.png",
+      "https://2xm7hdufl9.ucarecd.net/f8cc0e49-a03b-4f57-9cd2-07ea9be864c9/",
     description:
       "Biji Liberika langka dari Kepulauan Meranti, Riau. Dikenal dengan ukuran besar dan bentuk asimetris unik. Profil rasa fruity, smoky, dan floral dengan sentuhan nangka, beri gelap, serta gula terbakar. Kopi kolektor yang istimewa.",
   },
@@ -237,7 +237,7 @@ export const products: SeedProducts = [
     weight: 250,
     stockQuantity: 65,
     imageUrl:
-      "https://2xm7hdufl9.ucarecd.net/a6adf33d-0ad8-47de-a953-d354a3c6a506/coldbrewstarterpack.png",
+      "https://2xm7hdufl9.ucarecd.net/0b320116-d492-44fd-9f8a-203b3c1362cf/",
     description:
       "Blend gilingan kasar yang dioptimalkan untuk ekstraksi cold brew. Perpaduan biji Brasil dan Sumatra dengan roast medium-dark menghasilkan cold brew yang halus, rendah asam, dengan nuansa kakao, vanila, dan gula merah. Cukup tambahkan air dan diamkan 12–24 jam.",
   },
