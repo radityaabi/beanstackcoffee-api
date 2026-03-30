@@ -31,8 +31,6 @@ export const LoginSchema = z
 export const AuthResponseSchema = z
   .object({
     message: z.string(),
-    token: z.string(),
-    refreshToken: z.string(),
     user: z.object({
       id: z.string(),
       username: z.string(),
@@ -41,17 +39,9 @@ export const AuthResponseSchema = z
   })
   .openapi("AuthResponse");
 
-export const RefreshSchema = z
-  .object({
-    refreshToken: z.string().openapi({ example: "your-refresh-token" }),
-  })
-  .openapi("Refresh");
-
 export const RefreshResponseSchema = z
   .object({
     message: z.string(),
-    token: z.string(),
-    refreshToken: z.string(),
   })
   .openapi("RefreshResponse");
 

@@ -1,17 +1,19 @@
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { prisma } from "../../lib/prisma";
 import { hashSync, compareSync } from "bcryptjs";
+import { getCookie } from "hono/cookie";
 import {
   createTokenPair,
   verifyRefreshToken,
   REFRESH_TOKEN_EXPIRY_DAYS,
   authMiddleware,
+  setAuthCookies,
+  clearAuthCookies,
 } from "../../lib/auth";
 import {
   RegisterSchema,
   LoginSchema,
   AuthResponseSchema,
-  RefreshSchema,
   RefreshResponseSchema,
   MeResponseSchema,
 } from "./schema";
@@ -84,17 +86,16 @@ authRoute.openapi(registerRoute, async (c) => {
   await prisma.userToken.create({
     data: {
       userId: user.id,
-      accessToken,
       refreshToken,
       expiresAt: refreshTokenExpiresAt(),
     },
   });
 
+  setAuthCookies(c, accessToken, refreshToken);
+
   return c.json(
     {
       message: "User registered successfully",
-      token: accessToken,
-      refreshToken,
       user: { id: user.id, username: user.username, email: user.email },
     },
     201,
@@ -141,17 +142,16 @@ authRoute.openapi(loginRoute, async (c) => {
   await prisma.userToken.create({
     data: {
       userId: user.id,
-      accessToken,
       refreshToken,
       expiresAt: refreshTokenExpiresAt(),
     },
   });
 
+  setAuthCookies(c, accessToken, refreshToken);
+
   return c.json(
     {
       message: "Login successful",
-      token: accessToken,
-      refreshToken,
       user: { id: user.id, username: user.username, email: user.email },
     },
     200,
@@ -204,7 +204,7 @@ const logoutRoute = createRoute({
   tags,
   summary: "Logout user",
   description:
-    "Revokes the current access token and its associated refresh token.",
+    "Revokes the current refresh token and clears auth cookies.",
   security: [{ Bearer: [] }],
   responses: {
     200: { description: "Logged out successfully" },
@@ -215,12 +215,15 @@ const logoutRoute = createRoute({
 authRoute.use("/logout", authMiddleware);
 
 authRoute.openapi(logoutRoute, async (c) => {
-  const authHeader = c.req.header("Authorization")!;
-  const token = authHeader.replace("Bearer ", "");
+  const refreshToken = getCookie(c, "refresh_token");
 
-  await prisma.userToken.delete({
-    where: { accessToken: token },
-  });
+  if (refreshToken) {
+    await prisma.userToken.deleteMany({
+      where: { refreshToken },
+    });
+  }
+
+  clearAuthCookies(c);
 
   return c.json({ message: "Logged out successfully" }, 200);
 });
@@ -231,12 +234,7 @@ const refreshRoute = createRoute({
   path: "/refresh",
   tags,
   summary: "Refresh access token",
-  description: "Exchange a valid refresh token (JWT) for a new token pair.",
-  request: {
-    body: {
-      content: { "application/json": { schema: RefreshSchema } },
-    },
-  },
+  description: "Exchange a valid refresh token (from cookie) for a new token pair.",
   responses: {
     200: {
       description: "Token refreshed successfully",
@@ -247,10 +245,15 @@ const refreshRoute = createRoute({
 });
 
 authRoute.openapi(refreshRoute, async (c) => {
-  const { refreshToken } = c.req.valid("json");
+  const refreshToken = getCookie(c, "refresh_token");
+
+  if (!refreshToken) {
+    return c.json({ error: "No refresh token provided." }, 401);
+  }
 
   const payload = await verifyRefreshToken(refreshToken);
   if (!payload) {
+    clearAuthCookies(c);
     return c.json({ error: "Invalid or expired refresh token." }, 401);
   }
 
@@ -261,6 +264,7 @@ authRoute.openapi(refreshRoute, async (c) => {
 
   if (!userToken) {
     await prisma.userToken.deleteMany({ where: { userId: payload.userId } });
+    clearAuthCookies(c);
     return c.json(
       {
         error: "Refresh token reuse detected. All sessions have been revoked.",
@@ -276,17 +280,16 @@ authRoute.openapi(refreshRoute, async (c) => {
   await prisma.userToken.update({
     where: { id: userToken.id },
     data: {
-      accessToken,
       refreshToken: newRefreshToken,
       expiresAt: refreshTokenExpiresAt(),
     },
   });
 
+  setAuthCookies(c, accessToken, newRefreshToken);
+
   return c.json(
     {
       message: "Token refreshed successfully",
-      token: accessToken,
-      refreshToken: newRefreshToken,
     },
     200,
   );

@@ -62,7 +62,6 @@ model UserToken {
 
   userId       String
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken  String   @unique
   refreshToken String   @unique
   expiresAt    DateTime
 

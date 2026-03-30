@@ -1,11 +1,16 @@
 import { sign, verify } from "hono/jwt";
 import { createMiddleware } from "hono/factory";
 import type { Context, Next } from "hono";
-import { prisma } from "./prisma";
+import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 
 // ─── Secrets ───
 function getJwtSecret(): string {
   return process.env.JWT_SECRET || "default-secret-change-me";
+}
+
+// ─── Environment ───
+function isProduction(): boolean {
+  return process.env.NODE_ENV === "production";
 }
 
 // ─── Expiry ───
@@ -81,28 +86,57 @@ export async function createTokenPair(user: {
   return { accessToken, refreshToken };
 }
 
+// ─── Cookie Helpers ───
+export function setAuthCookies(
+  c: Context,
+  accessToken: string,
+  refreshToken: string,
+): void {
+  const production = isProduction();
+
+  setCookie(c, "access_token", accessToken, {
+    httpOnly: true,
+    secure: production,
+    sameSite: production ? "None" : "Lax",
+    path: "/",
+    maxAge: ACCESS_TOKEN_EXPIRY_SECONDS,
+  });
+
+  setCookie(c, "refresh_token", refreshToken, {
+    httpOnly: true,
+    secure: production,
+    sameSite: production ? "None" : "Lax",
+    path: "/",
+    maxAge: REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60,
+  });
+}
+
+export function clearAuthCookies(c: Context): void {
+  const prod = isProduction();
+  const cookieOptions = {
+    httpOnly: true,
+    secure: prod,
+    sameSite: prod ? ("None" as const) : ("Lax" as const),
+    path: "/",
+  };
+
+  deleteCookie(c, "access_token", cookieOptions);
+  deleteCookie(c, "refresh_token", cookieOptions);
+}
+
 // ─── Auth Middleware ───
 export const authMiddleware = createMiddleware(
   async (c: Context, next: Next) => {
-    const authHeader = c.req.header("Authorization");
+    const token = getCookie(c, "access_token");
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return c.json({ error: "Unauthorized. Bearer token required." }, 401);
+    if (!token) {
+      return c.json({ error: "Unauthorized. No access token." }, 401);
     }
 
-    const token = authHeader.replace("Bearer ", "");
     const payload = await verifyToken(token);
 
     if (!payload) {
       return c.json({ error: "Invalid or expired token." }, 401);
-    }
-
-    const activeToken = await prisma.userToken.findUnique({
-      where: { accessToken: token },
-    });
-
-    if (!activeToken) {
-      return c.json({ error: "Token has been revoked." }, 401);
     }
 
     c.set("userId" as never, payload.userId as never);

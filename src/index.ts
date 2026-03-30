@@ -18,8 +18,9 @@ app.use(
   cors({
     origin: ["http://localhost:5173", "https://beanstackcoffee.radityaabi.com"],
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-    allowHeaders: ["Content-Type", "Authorization"],
-    exposeHeaders: ["Link", "X-Total-Count", "X-Total-Pages"],
+    allowHeaders: ["Content-Type", "Authorization", "Cookie"],
+    exposeHeaders: ["Link", "X-Total-Count", "X-Total-Pages", "Set-Cookie"],
+    credentials: true,
   }),
 );
 
