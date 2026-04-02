@@ -79,20 +79,6 @@ authRoute.openapi(registerRoute, async (c) => {
     data: { username, email, password: hashedPassword },
   });
 
-  const { accessToken, refreshToken } = await createTokenPair(user);
-
-  await prisma.userToken.deleteMany({ where: { userId: user.id } });
-
-  await prisma.userToken.create({
-    data: {
-      userId: user.id,
-      refreshToken,
-      expiresAt: refreshTokenExpiresAt(),
-    },
-  });
-
-  setAuthCookies(c, accessToken, refreshToken);
-
   return c.json(
     {
       message: "User registered successfully",
@@ -203,8 +189,7 @@ const logoutRoute = createRoute({
   path: "/logout",
   tags,
   summary: "Logout user",
-  description:
-    "Revokes the current refresh token and clears auth cookies.",
+  description: "Revokes the current refresh token and clears auth cookies.",
   security: [{ Bearer: [] }],
   responses: {
     200: { description: "Logged out successfully" },
@@ -234,7 +219,8 @@ const refreshRoute = createRoute({
   path: "/refresh",
   tags,
   summary: "Refresh access token",
-  description: "Exchange a valid refresh token (from cookie) for a new token pair.",
+  description:
+    "Exchange a valid refresh token (from cookie) for a new token pair.",
   responses: {
     200: {
       description: "Token refreshed successfully",
