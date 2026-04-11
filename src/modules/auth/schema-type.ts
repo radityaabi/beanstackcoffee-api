@@ -1,4 +1,5 @@
 import { z } from "@hono/zod-openapi";
+import { UserSchema } from "../user/schema-type";
 
 export const PasswordSchema = z
   .string()
@@ -9,18 +10,13 @@ export const PasswordSchema = z
   .regex(/[0-9]/, "Password must contain at least one number")
   .openapi({ example: "Securepassword123" });
 
-export const RegisterUserSchema = z
-  .object({
-    name: z.string().min(1).openapi({ example: "John Doe" }),
-    username: z
-      .string()
-      .min(3)
-      .max(30)
-      .openapi({ example: "coffeeenthusiast" }),
-    email: z.email().openapi({ example: "user@example.com" }),
-    password: PasswordSchema,
-  })
-  .openapi("Register");
+export const RegisterUserSchema = UserSchema.omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
+  password: PasswordSchema,
+});
 
 export const LoginUserSchema = z
   .object({
