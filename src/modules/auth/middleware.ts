@@ -15,7 +15,7 @@ export type AuthMiddlewareEnv = z.infer<typeof AuthMiddlewareEnvSchema>;
 
 const factory = createFactory<AuthMiddlewareEnv>();
 
-export const authMiddleware = factory.createMiddleware(async (c, next) => {
+export const checkAuthMiddleware = factory.createMiddleware(async (c, next) => {
   try {
     const token = getCookie(c, "access_token");
 

@@ -1,6 +1,6 @@
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { prisma } from "../../lib/prisma";
-import { authMiddleware } from "../auth/middleware";
+import { checkAuthMiddleware } from "../auth/middleware";
 import {
   CartSchema,
   AddToCartSchema,
@@ -13,7 +13,7 @@ export const cartRoute = new OpenAPIHono();
 const tags = ["Cart"];
 
 // Apply auth middleware to all cart routes
-cartRoute.use("/*", authMiddleware);
+cartRoute.use("/*", checkAuthMiddleware);
 
 // Helper: get or create cart for user
 async function getOrCreateCart(userId: string) {

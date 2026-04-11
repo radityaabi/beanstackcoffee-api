@@ -9,7 +9,7 @@ import {
   setAuthCookies,
   clearAuthCookies,
 } from "../../lib/token";
-import { authMiddleware, type AuthMiddlewareEnv } from "./middleware";
+import { checkAuthMiddleware, type AuthMiddlewareEnv } from "./middleware";
 import {
   RegisterUserSchema,
   LoginUserSchema,
@@ -185,7 +185,7 @@ const meRoute = createRoute({
   },
 });
 
-authRoute.use("/me", authMiddleware);
+authRoute.use("/me", checkAuthMiddleware);
 
 authRoute.openapi(meRoute, async (c) => {
   const user = c.get("user");
@@ -221,7 +221,7 @@ const logoutRoute = createRoute({
   },
 });
 
-authRoute.use("/logout", authMiddleware);
+authRoute.use("/logout", checkAuthMiddleware);
 
 authRoute.openapi(logoutRoute, async (c) => {
   const refreshToken = getCookie(c, "refresh_token");
