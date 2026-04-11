@@ -3,7 +3,7 @@ import { getCookie } from "hono/cookie";
 import { verifyToken } from "../../lib/token";
 import { prisma } from "../../lib/prisma";
 import z from "zod";
-import { UserSchema } from "../user/schema";
+import { UserSchema } from "../user/schema-type";
 
 export const AuthMiddlewareEnvSchema = z.object({
   Variables: z.object({

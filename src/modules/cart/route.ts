@@ -6,7 +6,7 @@ import {
   AddToCartSchema,
   UpdateCartItemSchema,
   CartItemParamSchema,
-} from "./schema";
+} from "./schema-type";
 
 export const cartRoute = new OpenAPIHono();
 

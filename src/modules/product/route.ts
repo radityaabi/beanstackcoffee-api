@@ -10,7 +10,7 @@ import {
   CreateProductSchema,
   UpdateProductSchema,
   ProductQuerySchema,
-} from "./schema";
+} from "./schema-type";
 
 export const productRoute = new OpenAPIHono();
 

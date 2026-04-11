@@ -1,4 +1,4 @@
-import { SeedProducts } from "../src/modules/product/schema";
+import { SeedProducts } from "../src/modules/product/schema-type";
 
 export const products: SeedProducts = [
   {

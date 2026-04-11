@@ -1,5 +1,5 @@
 import { z } from "@hono/zod-openapi";
-import { ProductSchema } from "../product/schema";
+import { ProductSchema } from "../product/schema-type";
 import {
   CartModelSchema,
   CartItemModelSchema,

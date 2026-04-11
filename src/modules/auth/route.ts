@@ -16,7 +16,7 @@ import {
   AuthResponseSchema,
   RefreshResponseSchema,
   MeResponseSchema,
-} from "./schema";
+} from "./schema-type";
 
 export const authRoute = new OpenAPIHono<AuthMiddlewareEnv>({
   defaultHook: (result, c) => {
