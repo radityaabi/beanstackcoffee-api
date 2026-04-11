@@ -18,10 +18,7 @@ export const REFRESH_TOKEN_EXPIRY_DAYS = 7;
 const REFRESH_TOKEN_EXPIRY_SECONDS = REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60;
 
 // ─── Access Token ───
-export async function signToken(payload: {
-  userId: string;
-  email: string;
-}): Promise<string> {
+export async function signToken(payload: { userId: string }): Promise<string> {
   return await sign(
     {
       ...payload,
@@ -35,11 +32,11 @@ export async function signToken(payload: {
 
 export async function verifyToken(
   token: string,
-): Promise<{ userId: string; email: string } | null> {
+): Promise<{ userId: string } | null> {
   try {
     const payload = await verify(token, getJwtSecret(), "HS256");
     if ((payload as any).type !== "access") return null;
-    return payload as { userId: string; email: string };
+    return payload as { userId: string };
   } catch {
     return null;
   }
@@ -47,7 +44,6 @@ export async function verifyToken(
 
 export async function generateRefreshToken(payload: {
   userId: string;
-  email: string;
 }): Promise<string> {
   return await sign(
     {
@@ -62,24 +58,22 @@ export async function generateRefreshToken(payload: {
 
 export async function verifyRefreshToken(
   token: string,
-): Promise<{ userId: string; email: string } | null> {
+): Promise<{ userId: string } | null> {
   try {
     const payload = await verify(token, getJwtSecret(), "HS256");
     if ((payload as any).type !== "refresh") return null;
-    return payload as { userId: string; email: string };
+    return payload as { userId: string };
   } catch {
     return null;
   }
 }
 
-export async function createToken(user: {
+export async function createTokenPair(user: {
   id: string;
-  email: string;
 }): Promise<{ accessToken: string; refreshToken: string }> {
-  const accessToken = await signToken({ userId: user.id, email: user.email });
+  const accessToken = await signToken({ userId: user.id });
   const refreshToken = await generateRefreshToken({
     userId: user.id,
-    email: user.email,
   });
 
   return { accessToken, refreshToken };

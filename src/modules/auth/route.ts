@@ -3,7 +3,7 @@ import { prisma } from "../../lib/prisma";
 import { hashPassword, verifyPassword } from "../../lib/hash";
 import { getCookie } from "hono/cookie";
 import {
-  createToken,
+  createTokenPair,
   verifyRefreshToken,
   REFRESH_TOKEN_EXPIRY_DAYS,
   setAuthCookies,
@@ -139,7 +139,7 @@ authRoute.openapi(loginRoute, async (c) => {
     return c.json({ error: "Invalid email or password" }, 401);
   }
 
-  const { accessToken, refreshToken } = await createToken(user);
+  const { accessToken, refreshToken } = await createTokenPair(user);
 
   await prisma.userToken.deleteMany({ where: { userId: user.id } });
 
@@ -281,7 +281,7 @@ authRoute.openapi(refreshRoute, async (c) => {
     );
   }
 
-  const { accessToken, refreshToken: newRefreshToken } = await createToken(
+  const { accessToken, refreshToken: newRefreshToken } = await createTokenPair(
     userToken.user,
   );
 
