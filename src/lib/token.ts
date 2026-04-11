@@ -1,10 +1,16 @@
-import { sign, verify } from "hono/jwt";
+import * as jwt from "jsonwebtoken";
 import type { Context } from "hono";
-import { getCookie, setCookie, deleteCookie } from "hono/cookie";
+import { setCookie, deleteCookie } from "hono/cookie";
+import { TokenUserType } from "../modules/auth/schema-type";
 
 // ─── Secrets ───
 function getJwtSecret(): string {
-  return process.env.JWT_SECRET || "default-secret-change-me";
+  return process.env.TOKEN_SECRET_KEY || "default-secret-change-me";
+}
+
+// ─── Expiry ───
+function getJwtExpiryDays(): number {
+  return Number(process.env.TOKEN_EXPIRY_DAYS) || 7;
 }
 
 // ─── Environment ───
@@ -14,19 +20,18 @@ function isProduction(): boolean {
 
 // ─── Expiry ───
 export const ACCESS_TOKEN_EXPIRY_SECONDS = 60 * 15; // 15 minutes
-export const REFRESH_TOKEN_EXPIRY_DAYS = 7;
+export const REFRESH_TOKEN_EXPIRY_DAYS = getJwtExpiryDays();
 const REFRESH_TOKEN_EXPIRY_SECONDS = REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60;
 
 // ─── Access Token ───
-export async function signToken(payload: { userId: string }): Promise<string> {
-  return await sign(
+export async function signToken(payload: TokenUserType): Promise<string> {
+  return jwt.sign(
     {
       ...payload,
       type: "access",
-      exp: Math.floor(Date.now() / 1000) + ACCESS_TOKEN_EXPIRY_SECONDS,
     },
     getJwtSecret(),
-    "HS256",
+    { algorithm: "HS256", expiresIn: ACCESS_TOKEN_EXPIRY_SECONDS },
   );
 }
 
@@ -34,7 +39,9 @@ export async function verifyToken(
   token: string,
 ): Promise<{ userId: string } | null> {
   try {
-    const payload = await verify(token, getJwtSecret(), "HS256");
+    const payload = jwt.verify(token, getJwtSecret(), {
+      algorithms: ["HS256"],
+    });
     if ((payload as any).type !== "access") return null;
     return payload as { userId: string };
   } catch {
@@ -45,14 +52,13 @@ export async function verifyToken(
 export async function generateRefreshToken(payload: {
   userId: string;
 }): Promise<string> {
-  return await sign(
+  return jwt.sign(
     {
       ...payload,
       type: "refresh",
-      exp: Math.floor(Date.now() / 1000) + REFRESH_TOKEN_EXPIRY_SECONDS,
     },
     getJwtSecret(),
-    "HS256",
+    { algorithm: "HS256", expiresIn: REFRESH_TOKEN_EXPIRY_SECONDS },
   );
 }
 
@@ -60,7 +66,9 @@ export async function verifyRefreshToken(
   token: string,
 ): Promise<{ userId: string } | null> {
   try {
-    const payload = await verify(token, getJwtSecret(), "HS256");
+    const payload = jwt.verify(token, getJwtSecret(), {
+      algorithms: ["HS256"],
+    });
     if ((payload as any).type !== "refresh") return null;
     return payload as { userId: string };
   } catch {
@@ -71,7 +79,7 @@ export async function verifyRefreshToken(
 export async function createTokenPair(user: {
   id: string;
 }): Promise<{ accessToken: string; refreshToken: string }> {
-  const accessToken = await signToken({ userId: user.id });
+  const accessToken = await signToken({ id: user.id });
   const refreshToken = await generateRefreshToken({
     userId: user.id,
   });

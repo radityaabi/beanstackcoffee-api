@@ -52,3 +52,12 @@ export const MeResponseSchema = z
     updatedAt: z.string(),
   })
   .openapi("MeResponse");
+
+export const TokenUserSchema = UserSchema.pick({ id: true });
+
+export type RegisterUserInputType = z.infer<typeof RegisterUserSchema>;
+export type LoginUserInputType = z.infer<typeof LoginUserSchema>;
+export type AuthResponseType = z.infer<typeof AuthResponseSchema>;
+export type RefreshResponseType = z.infer<typeof RefreshResponseSchema>;
+export type MeResponseType = z.infer<typeof MeResponseSchema>;
+export type TokenUserType = z.infer<typeof TokenUserSchema>;
