@@ -124,17 +124,20 @@ const loginRoute = createRoute({
 });
 
 authRoute.openapi(loginRoute, async (c) => {
-  const { email, password } = c.req.valid("json");
+  const validatedBody = c.req.valid("json");
 
   const user = await prisma.user.findUnique({
-    where: { email },
+    where: { email: validatedBody.email },
     include: { password: true },
   });
   if (!user || !user.password) {
     return c.json({ error: "Invalid email or password" }, 401);
   }
 
-  const validPassword = await verifyPassword(user.password.hash, password);
+  const validPassword = await verifyPassword(
+    user.password.hash,
+    validatedBody.password,
+  );
   if (!validPassword) {
     return c.json({ error: "Invalid email or password" }, 401);
   }
@@ -173,7 +176,6 @@ const meRoute = createRoute({
   path: "/me",
   tags,
   summary: "Get current authenticated user",
-  security: [{ Bearer: [] }],
   responses: {
     200: {
       description: "Current user details",

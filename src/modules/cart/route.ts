@@ -57,7 +57,6 @@ const getCartRoute = createRoute({
   path: "/",
   tags,
   summary: "Get user's cart",
-  security: [{ Bearer: [] }],
   responses: {
     200: {
       description: "User's cart with items",
@@ -88,7 +87,6 @@ const addToCartRoute = createRoute({
   summary: "Add product to cart",
   description:
     "If the product already exists in the cart, its quantity will be incremented.",
-  security: [{ Bearer: [] }],
   request: {
     body: {
       content: { "application/json": { schema: AddToCartSchema } },
@@ -174,7 +172,6 @@ const removeCartItemRoute = createRoute({
   path: "/items/{id}",
   tags,
   summary: "Remove item from cart",
-  security: [{ Bearer: [] }],
   request: {
     params: CartItemParamSchema,
   },
@@ -224,7 +221,6 @@ const updateCartItemRoute = createRoute({
   path: "/items/{id}",
   tags,
   summary: "Update cart item quantity",
-  security: [{ Bearer: [] }],
   request: {
     params: CartItemParamSchema,
     body: {

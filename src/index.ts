@@ -60,12 +60,12 @@ app.doc("/openapi.json", {
   },
 });
 
-app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
-  type: "http",
-  scheme: "bearer",
-  bearerFormat: "JWT",
-  description: "Enter your JWT token",
-});
+// app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
+//   type: "http",
+//   scheme: "bearer",
+//   bearerFormat: "JWT",
+//   description: "Enter your JWT token",
+// });
 
 app.get("/", Scalar({ url: "/openapi.json" }));
 
