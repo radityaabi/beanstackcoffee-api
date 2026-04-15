@@ -14,9 +14,11 @@ export const RegisterUserSchema = UserSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
-}).extend({
-  password: PasswordSchema,
-});
+})
+  .extend({
+    password: PasswordSchema,
+  })
+  .openapi("Register");
 
 export const LoginUserSchema = z
   .object({
