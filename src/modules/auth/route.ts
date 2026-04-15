@@ -126,29 +126,29 @@ const loginRoute = createRoute({
 authRoute.openapi(loginRoute, async (c) => {
   const validatedBody = c.req.valid("json");
 
-  const user = await prisma.user.findUnique({
+  const existingUser = await prisma.user.findUnique({
     where: { email: validatedBody.email },
     include: { password: true },
   });
-  if (!user || !user.password) {
+  if (!existingUser || !existingUser.password) {
     return c.json({ error: "Invalid email or password" }, 401);
   }
 
   const validPassword = await verifyPassword(
-    user.password.hash,
+    existingUser.password.hash,
     validatedBody.password,
   );
   if (!validPassword) {
     return c.json({ error: "Invalid email or password" }, 401);
   }
 
-  const { accessToken, refreshToken } = await createTokenPair(user);
+  const { accessToken, refreshToken } = await createTokenPair(existingUser);
 
-  await prisma.userToken.deleteMany({ where: { userId: user.id } });
+  await prisma.userToken.deleteMany({ where: { userId: existingUser.id } });
 
   await prisma.userToken.create({
     data: {
-      userId: user.id,
+      userId: existingUser.id,
       refreshToken,
       expiresAt: refreshTokenExpiresAt(),
     },
@@ -160,10 +160,10 @@ authRoute.openapi(loginRoute, async (c) => {
     {
       message: "Login successful",
       user: {
-        id: user.id,
-        name: user.name,
-        username: user.username,
-        email: user.email,
+        id: existingUser.id,
+        name: existingUser.name,
+        username: existingUser.username,
+        email: existingUser.email,
       },
     },
     200,
