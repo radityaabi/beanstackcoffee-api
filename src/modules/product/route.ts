@@ -130,9 +130,9 @@ productRoute.openapi(getProductsRoute, async (c) => {
 
   paramsBase.set("limit", String(limit));
 
-  const buildLink = (p: number) => {
+  const buildLink = (page: number) => {
     const params = new URLSearchParams(paramsBase); // clone
-    params.set("page", String(p));
+    params.set("page", String(page));
     return `<${baseUrl}?${params.toString()}>`;
   };
 
