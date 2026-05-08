@@ -72,10 +72,18 @@ productRoute.openapi(getProductsRoute, async (c) => {
     ];
   }
 
-  // Filter by category ID (supports multiple comma-separated values)
-  if (query.categoryId) {
-    const ids = query.categoryId.split(",").map((id: string) => id.trim());
-    where.categoryId = ids.length === 1 ? ids[0] : { in: ids };
+  // Filter by category slug (supports multiple comma-separated values)
+  if (query.category) {
+    const slugs = query.category
+      .split(",")
+      .map((s: string) => s.trim());
+    const categories = await prisma.category.findMany({
+      where: { slug: slugs.length === 1 ? slugs[0] : { in: slugs } },
+      select: { id: true },
+    });
+    const categoryIds = categories.map((c: { id: string }) => c.id);
+    where.categoryId =
+      categoryIds.length === 1 ? categoryIds[0] : { in: categoryIds };
   }
 
   // Filter by price range

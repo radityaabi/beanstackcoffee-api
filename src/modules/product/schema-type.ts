@@ -73,10 +73,10 @@ export const ProductQuerySchema = z.object({
   page: z.string().optional().openapi({ example: "1" }),
   limit: z.string().optional().openapi({ example: "10" }),
   search: z.string().optional().openapi({ example: "arabica" }),
-  categoryId: z.string().optional().openapi({
-    example: "01JMXYZ...",
+  category: z.string().optional().openapi({
+    example: "arabica",
     description:
-      "Filter by category ID. Supports multiple values separated by commas.",
+      "Filter by category slug. Supports multiple values separated by commas.",
   }),
   minPrice: z.string().optional().openapi({ example: "50000" }),
   maxPrice: z.string().optional().openapi({ example: "200000" }),
